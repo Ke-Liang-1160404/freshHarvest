@@ -18,9 +18,11 @@
 
 #import
 from typing import Literal
+from freshHarvest import db
 
-
-class Product():
+class Product(db.Model):
+    
+              
     """! class for product."""
     
     def __init__(self, product_id: int, name: str, price_per_unit: float, unit: Literal['pack', 'punnet', 'weight', 'bunches']):

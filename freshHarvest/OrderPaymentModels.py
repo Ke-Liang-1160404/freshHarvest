@@ -21,8 +21,8 @@
 
 
 #import
-from Product import Product, BoxProduct
-from People import Customer
+from freshHarvest.ProductModels import Product, BoxProduct
+from freshHarvest.PeopleModels import Customer
 from typing import Literal
 
 class OrderItem:

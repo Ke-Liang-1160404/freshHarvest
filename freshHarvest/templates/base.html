@@ -3,12 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="icon"
-      type="image/ico"
-      href="../static/image/Wingman_Secondary_Logo.png"
-    />
-    <title>{% block title %}Wingman{% endblock %}</title>
+
+    <title>{% block title %}Fresh Harvest{% endblock %}</title>
     <script src="../static/index.js"></script>
     <link rel="stylesheet" href="../static/index.css" />
     <link
@@ -31,9 +27,9 @@
   <body>
     <header>
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a href="{{url_for('home')}}" class="navbar-brand">
+        <a href="{{url_for('index')}}" class="navbar-brand">
           <img
-            src="../static/image/Wingman_Secondary_Logo.png"
+            src="#"
             alt="secondary_logo"
             class="img-fluid"
             style="max-width: 100px"
@@ -53,51 +49,29 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a href="{{url_for('ideal_cow')}}" class="btn btn-primary"
-                >Start choosing your bulls</a
+              <a href="#" class="btn btn-primary"
+                >Orders</a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="#" class="btn btn-primary"
+                >Products</a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="#" class="btn btn-primary"
+                >Payments</a
               >
             </li>
           
-            {% if current_user.is_authenticated %}
-            <li class="nav-item">
-              <a href="{{url_for('logout')}}" class="nav-link">
-                Logout {% if current_user.profile_pic %}
-                <img
-                  src="{{ current_user.profile_pic }}"
-                  alt="Profile Picture"
-                  class="img-fluid rounded-circle ms-2"
-                  style="max-width: 30px"
-                />
-                {% else %}
-                <strong>{{current_user.username}}</strong>
-                {% endif %}
-              </a>
-            </li>
-            {% else %}
-            <li class="nav-item">
-              <a href="{{url_for('login')}}" class="nav-link">Sign Up/Login</a>
-            </li>
-            {% endif %} {% if current_user.role =='admin' %}
-            <li class="nav-item">
-              <a href="{{url_for('update_bull_file')}}" class="nav-link">Admin</a>
-            </li>
-            {% endif %}
+          
           </ul>
         </div>
       </nav>
       <div class="flex-wrap position-fixed bottom-0 end-0 p-3 z-3">
-        <!--Social Media Icons-->
-        <!-- instagram -->
-      
+        
 
-        <a href="https://www.linkedin.com/company/wingmanforyourherd/" target="_blank">
-         <img src="../static/image/linkedin_icon.png" alt="linkedin icon" width="50px" height="50px">
-        </a>
-
-        <a href="https://www.instagram.com/_yourwingman_" target="_blank">
-          <img src="../static/image/instagram.png" alt="instagram icon" width="50px" height="50px">
-
-        </a>
+     
         <button class="btn btn-dark ms-lg-3" data-bs-toggle="modal" data-bs-target="#contactModal">
           Contact Us
         </button>
@@ -111,7 +85,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form id="contactForm" method="POST" action="{{ url_for('send_contact_mail') }}">
+              <form id="contactForm" method="POST" action="#">
                 <div class="mb-3">
                   <label for="name" class="form-label">Name</label>
                   <input type="text" class="form-control" id="name" name="name" required />
@@ -134,9 +108,9 @@
         </div>
       </div>
       <div class="text-center my-4">
-        <a href="{{url_for('home')}}">
+        <a href="{{url_for('index')}}">
           <img
-            src="../static/image/Wingman_Primary_Logo.png"
+            src="#"
             alt="primary_logo"
             class="img-fluid"
             style="max-width: 200px"
@@ -170,7 +144,7 @@
 
     
       
-      {% block content %}{% endblock %}
+    {% block content %}{% endblock %}
     </section>
 
     <!-- Footer -->
@@ -178,22 +152,22 @@
       <footer
         class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top"
       >
-        <p class="col-md-4 mb-0 text-muted">© 2024 Wingman</p>
+        <p class="col-md-4 mb-0 text-muted">© 2024 Fresh Harvest</p>
         <a
-          href="{{ url_for('home') }}"
+          href="{{ url_for('index') }}"
           class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none"
         >
           <img
             class="bi me-2"
             width="70"
             height="70"
-            src="../static/image/Wingman_Secondary_Logo.png"
-            alt="Wingman_Secondary_Logo"
+            src="#"
+            alt="Harvest_logo"
           />
         </a>
         <ul class="nav col-md-4 justify-content-end">
           <li class="nav-item">
-            <a href="{{ url_for('home') }}" class="nav-link px-2 text-muted"
+            <a href="{{ url_for('index') }}" class="nav-link px-2 text-muted"
               > <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
                 <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>
               </svg> Home</a
@@ -205,24 +179,5 @@
     </div>
   </body>
 
-  <script>
-   $(document).ready(function () {
-  // Order Bull Form Submission
-  $('#orderBullForm').on('submit', function () {
-    $('#loading').show(); // Show the loading indicator
-    $('#orderBullForm button').prop('disabled', true); // Disable the submit button
-  });
-   });
-   $(document).ready(function () {
-  // Contact Form Submission
-  $('#contactForm').on('submit', function () {
-    $('#loading').show(); // Show the loading indicator
-    $('#contactModal .btn').prop('disabled', true); // Disable the button to prevent multiple clicks
-    $('#contactModal').modal('hide'); // Hide the modal after submission
-  });
-});
-  function sendEmail() {
-    window.location.href = "mailto:mark@yourwingman.co.nz?subject=Subject&body=This is the email body";
-}
-  </script>
+
 </html>

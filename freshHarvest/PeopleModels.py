@@ -36,7 +36,7 @@
 #imports
 from abc import ABC, abstractmethod
 from typing import Literal,List,Dict
-from OrderPayment import Order
+from freshHarvest.OrderPaymentModels import Order
 
 class People(ABC):
     """! Abstract class for all people. Parent class for roles such as Customer and Staff."""
