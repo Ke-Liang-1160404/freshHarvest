@@ -11,5 +11,5 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:asssks0714@localhost/fresh
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db= SQLAlchemy(app)
 
-from freshHarvest import home
+from freshHarvest import home, login
 
