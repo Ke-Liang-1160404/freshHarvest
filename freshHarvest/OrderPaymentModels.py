@@ -24,19 +24,31 @@
 from freshHarvest.ProductModels import Product, BoxProduct
 from freshHarvest.PeopleModels import Customer
 from typing import Literal
+from freshHarvest import db
 
-class OrderItem:
+class OrderItem(db.Model):
+    __tablename__ = 'order_item'
+    order_item_id = db.Column(db.Integer, primary_key=True)
+    product_or_box_id = db.Column(db.Integer, nullable=False)
+    product_type= db.Column(db.String(100))
+    quantity = db.Column(db.Integer, nullable=False)  # distinguish between product and boxProduct
+    order_id = db.Column(db.Integer, db.ForeignKey('order.order_id'), nullable=False)
+    order = db.relationship('Orders', back_populates='order_items')
+
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'order_item',
+        'polymorphic_on': product_type
+    }
     """! class for order item. 
     an order item can be a product or a box.
     """
     
-    def __init__(self, order_id: int, product_or_box: Product | BoxProduct , quantity: int = 1):
+    def __init__(self, product_or_box, quantity: int = 1):
         """! Constructor for the OrderItem class. 
-        @param order_id (int): The unique order ID.
         @param product_or_box: Can be either a Product or a BoxProduct.
         @param quantity (int): Quantity of the product or the box.
         """
-        self.__order_id = order_id
         self.__product_or_box = product_or_box
         self.__quantity = quantity
 
@@ -94,7 +106,16 @@ class OrderItem:
         """
         pass
       
-class Order:
+class Orders(db.Model):
+    __tablename__ = 'orders'
+    order_id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customer.customer_id'), nullable=False)
+    delivery_distance = db.Column(db.Float)
+    
+    customer = db.relationship('Customer', back_populates='orders')
+    order_items = db.relationship('OrderItem', back_populates='orders', cascade='all, delete-orphan')
+
+
     """! class for order.
     an order can contain multiple order items.
     """
@@ -210,9 +231,18 @@ class Order:
 
 
 
-class Payment:
+class Payment(db.Model):
+    __tablename__ = 'payment' 
+    payment_id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('order.order_id'), nullable=False)
+    amount = db.Column(db.Float)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customer.customer_id'))
+    payment_method = db.Column(db.String(100), nullable=False)  # credit, debit, account
+    status = db.Column(db.Boolean)  
+    
+    order = db.relationship('Order', backref='payment')
     """! class for payment"""
-    def __init__(self, payment_id: int, order: Order, amount: float, payment_method: Literal ['creidt','debit', 'account'], customer: Customer, status: bool = False):
+    def __init__(self, payment_id: int, order: Order, amount: float, payment_method: Literal ['credit','debit', 'account'], customer: Customer, status: bool = False):
         """! Constructor for the Payment class.
         @param payment_id (int): The unique payment ID.
         @param order (Order): The order being paid.
@@ -329,3 +359,129 @@ class Payment:
         
         """
         pass
+
+
+class CreditCardPayment(Payment, db.Model):
+    __tablename__ = 'credit_card_payment'
+    card_number = db.Column(db.String(100))
+    card_expiry = db.Column(db.String(100))
+    card_cvv = db.Column(db.String(100))
+    
+    """! class for credit card payment"""
+    def __init__(self, payment_id: int, order: Order, amount: float, payment_method: str, customer: Customer,  card_number: str, card_expiry: str, card_cvv: str, status: bool = False):
+        """! Constructor for the CreditCardPayment class.
+        @param card_number (str): The credit card number.
+        @param card_expiry (str): The credit card expiry date.
+        @param card_cvv (str): The credit card CVV.
+        """
+        super().__init__(payment_id, order, amount, payment_method, customer, status)
+        self.__card_number = card_number
+        self.__card_expiry = card_expiry
+        self.__card_cvv = card_cvv
+
+    @property
+    def card_number(self):
+        """! Getter for the card_number attribute.
+        @param None
+        @return str: The credit card number.
+        """
+        return self.__card_number
+    @card_number.setter
+    def card_number(self, value):
+        """! Setter for the card_number attribute.
+        @param value: The credit card number.
+        @return None
+        """
+        self.__card_number = value
+      
+    @property
+    def card_expiry(self):
+        """! Getter for the card_expiry attribute.
+        @param None
+        @return str: The credit card expiry date.
+        """
+        return self.__card_expiry
+    @card_expiry.setter
+    def card_expiry(self, value):
+        """! Setter for the card_expiry attribute.
+        @param value: The credit card expiry date.
+        @return None
+        """
+        self.__card_expiry = value
+      
+    @property
+    def card_cvv(self):
+        """! Getter for the card_cvv attribute.
+        @param None
+        @return str: The credit card CVV.
+        """
+        return self.__card_cvv
+    @card_cvv.setter
+    def card_cvv(self, value):
+        """! Setter for the card_cvv attribute.
+        @param value: The credit card CVV.
+        @return None
+        """
+        self.__card_cvv = value
+
+    def process_payment(self) -> bool:
+        """! Process the credit card payment.
+        @param None
+        @return bool: True if the payment is successful, False otherwise.
+        """
+        pass
+      
+      
+class DebitCardPayment(Payment,db.Model):
+  __tablename__ = 'debt_card_payment'
+  card_number = db.Column(db.String(100))
+  bank_name = db.Column(db.String(100))
+  """! class for debt card payment"""
+  def __init__(self, payment_id: int, order: Order, amount: float, payment_method: str, customer: Customer,card_number: str, bank_name:str, status: bool = False, ):
+    """! Constructor for the DebtCardPayment class.
+    @param card_number (str): The debt card number.
+    @param bank_name (str): The bank name.  
+    """
+    super().__init__(payment_id, order, amount, payment_method, customer, status)
+    self.__card_number = card_number
+    self.__bank_name = bank_name
+    
+
+
+
+  @property
+  def card_number(self):
+    """! Getter for the card_number attribute.
+    @param None
+    @return str: The debt card number.
+    """
+    return self.__card_number
+  @card_number.setter
+  def card_number(self, value):
+    """! Setter for the card_number attribute.
+    @param value: The debt card number.
+    @return None
+    """
+    self.__card_number = value
+  
+  @property 
+  def bank_name(self):
+    """! Getter for the bank_name attribute.
+    @param None
+    @return str: The bank name.
+    """
+    return self.__bank_name
+  @bank_name.setter
+  def bank_name(self, value):
+    """! Setter for the bank_name attribute.
+    @param value: The bank name.
+    @return None
+    """
+    self.__bank_name = value  
+
+  def process_payment(self) -> bool:
+    """! Process the debt card payment.
+    @param None
+    @return bool: True if the payment is successful, False otherwise.
+    """
+    pass  

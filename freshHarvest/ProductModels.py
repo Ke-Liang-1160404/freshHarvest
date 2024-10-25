@@ -17,12 +17,15 @@
 # Created by Kurt Liang student ID: 1160404 on 24-09-2024.
 
 #import
-from typing import Literal
+from typing import Literal, Dict
 from freshHarvest import db
 
 class Product(db.Model):
-    
-              
+    __tablename__ = 'product'
+    product_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    price_per_unit = db.Column(db.Float, nullable=False)
+    unit = db.Column(db.String(10), nullable=False)
     """! class for product."""
     
     def __init__(self, product_id: int, name: str, price_per_unit: float, unit: Literal['pack', 'punnet', 'weight', 'bunches']):
@@ -38,14 +41,14 @@ class Product(db.Model):
         self.__unit = unit
         
     @property
-    def product_id(self): 
+    def product_id(self)->int: 
         """! Getter for the product_id attribute.
         @param None
         @return int: The product_id
         """
         return self.__product_id
     @product_id.setter
-    def product_id(self, value):
+    def product_id(self, value: int):
         """! Setter for the product_id attribute.
         @param value: The product_id.
         @return None
@@ -53,7 +56,7 @@ class Product(db.Model):
         self.__product_id = value
     
     @property
-    def name(self):
+    def name(self) -> str:  
         """! Getter for the name attribute.
         @param None
         @return str: The name of the product.
@@ -61,7 +64,7 @@ class Product(db.Model):
         return self.__name
       
     @name.setter
-    def name(self, value):
+    def name(self, value: str):
         """! Setter for the name attribute.
         @param value: The name of the product.
         @return None
@@ -70,28 +73,28 @@ class Product(db.Model):
         self.__name = value
     
     @property
-    def price_per_unit(self):
+    def price_per_unit(self) ->float:
         """! Getter for the price_per_unit attribute.
         @param None
         @return float: The price of one unit of the product.
         """
         return self.__price_per_unit
     @price_per_unit.setter
-    def price_per_unit(self, value):
+    def price_per_unit(self, value: float):
         """! Setter for the price_per_unit attribute.
         @param value: The price of one unit of the product.
         @return None"""
         self.__price_per_unit = value
     
     @property
-    def unit(self):
+    def unit(self)  -> str :
         """! Getter for the unit attribute.
         @param None
         @return str: The unit of the product.
         """
         return self.__unit
     @unit.setter  
-    def unit(self, value):
+    def unit(self, value: str):
         """! Setter for the unit attribute.
         @param value: The unit of the product.
         @return None
@@ -113,7 +116,12 @@ class Product(db.Model):
     
         
 
-class BoxProduct():
+class BoxProduct(db.Model): 
+    __tablename__ = 'box_product'
+    box_id = db.Column(db.Integer, primary_key=True)
+    size = db.Column(db.String(10), nullable=False)
+    products = db.relationship('Product', secondary='box_product_product', backref='box_product')
+    
     """! class for box product.
     a box can contain multiple products with quantities.
     for example, a box can contain 2 kg of apples, 3 packs of potatoes, 2 bunches of coriander.
@@ -123,7 +131,7 @@ class BoxProduct():
         @param size (str): The size of the box (small, medium, large).
         """
         self.__size = size
-        self.__products = {}  # Dictionary of products and their quantities
+        self.__products: Dict[Product, int] = {}  # Dictionary of products and their quantities
 
         
     @property
@@ -162,14 +170,15 @@ class BoxProduct():
         @param None
         @return float: The total price of all the products inside the box.
         """
-        pass
+        return {p.name: q for p, q in self.__products.items()}
         
-    def all_products(self):
+    
+    def all_products(self) -> Dict[str, int]:
         """! Display all products in the box.
         @param None
         @return dict: A dictionary of products and their quantities.
         """
-        pass
+        return {p.name: q for p, q in self.__products.items()}
       
     def add_product(self, product: Product, quantity: int):
         """! Add a product to the box.
@@ -177,11 +186,15 @@ class BoxProduct():
         @param quantity: The quantity of the product to add.
         @return None
         """
-        pass
+        if product in self.__products:
+            self.__products[product] += quantity
+        else:
+            self.__products[product] = quantity
       
     def remove_product(self, product: Product):
         """! Remove a product from the box.
         @param product: The product to remove.
         @return None
         """
-        pass
+        if product in self.__products:
+            del self.__products[product]

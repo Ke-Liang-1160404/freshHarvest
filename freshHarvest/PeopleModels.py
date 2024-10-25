@@ -37,15 +37,22 @@
 from abc import ABC, abstractmethod
 from typing import Literal,List,Dict
 from freshHarvest.OrderPaymentModels import Order
-
-class People(ABC):
+from freshHarvest import db
+class People(ABC, db.Model):
+    __abstract__ = True
+    id = db.Column(db.Integer, primary_key=True)  
+    name = db.Column(db.String(50))
+    password = db.Column(db.String(128))
+    
     """! Abstract class for all people. Parent class for roles such as Customer and Staff."""
-    def __init__(self, name: str):
+    def __init__(self, name: str, password: str): 
         """! Constructor for the People class.
         @param name (str): The name of the person.
+        @param password (str): The password of the person.
+
         """
         self.__name = name
-        
+        self.__password = None
     @property
     def name(self):
         """! Getter for the name attribute.
@@ -60,6 +67,20 @@ class People(ABC):
         @return None
         """
         self.__name = value
+    @property
+    def password(self):
+        """! Getter for the password attribute.
+        @param None
+        @return str: The password of the person.
+        """
+        return self.__password
+    @password.setter
+    def password(self, value):
+        """! Setter for the password attribute.
+        @param value (str): The password of the person.
+        @return None
+        """
+        self.__password = value
         
     @abstractmethod
     def role_description(self):
@@ -70,18 +91,24 @@ class People(ABC):
         pass
 
 
-class Customer(People):
+class Customer(People, ABC, db.Model):
+    __abstract__ = True 
+    customer_number = db.Column(db.Integer, primary_key=True)
+    balance = db.Column(db.Float)
+    
+    orders= db.relationship('Order', backref='customer', lazy=True)
+
     """! inherited from People class. Represents a general customer with a customer number, name, and balance. parent class for PrivateCustomer and CorporateCustomer."""
-    def __init__(self, customer_number: int, name: str, balance: float):
+    def __init__(self, customer_number: int, name: str, balance: float, password: str):
         """! Constructor for the Customer class.
         @param customer_number (int): The unique customer number. 
         @param name (str): The name of the customer.
         @param balance (float): The balance of the customer.  
         """
-        super().__init__(name)
+        super().__init__(name, password)
         self.__customer_number = customer_number
         self.__balance = balance
-        self.__orders = [Order]
+
         
     @property
     def balance(self):
@@ -190,14 +217,16 @@ class Customer(People):
         pass
       
 
-class Staff(People):
+class Staff(People, db.Model):
+    __tablename__ = 'staff'
+    staff_id = db.Column(db.Integer, primary_key=True)
     """! Staff class representing employees in the system. Inherits from the People class and only includes the staff ID. """
-    def __init__(self, staff_id: int, name: str):
+    def __init__(self, staff_id: int, name: str, password: str):
         """! Constructor for the Staff class.
         @param staff_id (int): The unique staff ID.
         @param name (str): The name of the staff member.
         """
-        super().__init__(name)
+        super().__init__(name, password)
         self.__staff_id = staff_id
 
     @property
@@ -264,7 +293,11 @@ class Staff(People):
     
 
 
-class PrivateCustomer(Customer):
+class PrivateCustomer(Customer, db.Model):
+    __tablename__ = 'private_customer'
+    id = db.Column(db.Integer, primary_key=True)
+    owing= db.Column(db.Float, default=100.00)
+    
     """! private customer class. Inherits from Customer."""
     def __init__(self, customer_number: int, name: str, balance: float, owing: float = 100.00):
         """! Constructor for the PrivateCustomer class. 
@@ -336,7 +369,12 @@ class PrivateCustomer(Customer):
         """
         pass
 
-class CorporateCustomer(Customer):
+class CorporateCustomer(Customer, db.Model):
+    __tablename__ = 'corporate_customer'
+    id = db.Column(db.Integer, db.ForeignKey('customer.customer_number'), primary_key=True)
+    credit_limit = db.Column(db.Float)
+    discount_rate = db.Column(db.Float)
+    
     """! corporate customer class. Inherits from Customer and adds specific rules for corporate customers."""
     def __init__(self, customer_number: int, name: str, balance: float, credit_limit: float, discount_rate: float = 0.1):
         """! Constructor for the CorporateCustomer class.
