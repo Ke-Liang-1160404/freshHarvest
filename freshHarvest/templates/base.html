@@ -63,7 +63,9 @@
                 >Payments</a
               >
             </li>
-          
+            <li class="nav-item">
+              <a href="{{url_for('login')}}" class="nav-link">Sign Up/Login</a>
+            </li>
           
           </ul>
         </div>
@@ -144,7 +146,7 @@
 
     
       
-    {% block content %}{% endblock %}
+    {% block content %}{{customers}}{% endblock %}
     </section>
 
     <!-- Footer -->
