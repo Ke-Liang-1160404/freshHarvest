@@ -16,18 +16,27 @@ class WeightedVeggie(Veggie):
     id = db.Column(db.Integer, db.ForeignKey('veggies.id'), primary_key=True)
     weight = db.Column(db.Float)
     price_per_kilo = db.Column(db.Float)
+    space_occupied = db.Column(db.Float)
 
 class PackVeggie(Veggie):
     __tablename__ = 'pack_veggies'
     id = db.Column(db.Integer, db.ForeignKey('veggies.id'), primary_key=True)
     num_of_pack = db.Column(db.Integer)
     price_per_pack = db.Column(db.Float)
+    space_occupied = db.Column(db.Float)
 
 class UnitPriceVeggie(Veggie):
     __tablename__ = 'unit_price_veggies'
     id = db.Column(db.Integer, db.ForeignKey('veggies.id'), primary_key=True)
     price_per_unit = db.Column(db.Float)
-    quantity = db.Column(db.Integer)
+    space_occupied = db.Column(db.Float)
+
+class BunchVeggie(Veggie):
+    __tablename__ = 'bunch_veggies'
+    id = db.Column(db.Integer, db.ForeignKey('veggies.id'), primary_key=True)
+    num_of_bunch = db.Column(db.Integer)
+    price_per_bunch = db.Column(db.Float)
+    space_occupied = db.Column(db.Float)
 
 # --- Premade Box ---
 class PremadeBox(Item):
@@ -36,6 +45,7 @@ class PremadeBox(Item):
     size = db.Column(db.String(10))  # Small, Medium, Large
     num_of_boxes = db.Column(db.Integer)
     price = db.Column(db.Float)
+    space= db.Column(db.Float)
 
     contents = db.relationship('BoxContent', backref='box')
 
