@@ -40,11 +40,11 @@ def login():
 
                 # Redirect based on role
                 if session['role'] == 'staff':
-                    return redirect(url_for('staff_dashboard'))
+                    return redirect(url_for('staff_dashboard',session=session))
                 elif session['role'] == 'corporate_customer':
-                    return redirect(url_for('customer_dashboard'))
+                    return redirect(url_for('customer_dashboard',session=session))
                 elif session['role'] == 'customer':
-                    return redirect(url_for('customer_dashboard'))
+                    return redirect(url_for('customer_dashboard',session=session))
 
 
 
@@ -56,6 +56,12 @@ def login():
         
     return render_template('login.html')
   
+  
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    session.pop('role', None)
+    return redirect(url_for('login'))
   
 @app.route('/all_customers')
 def all_customers():

@@ -5,11 +5,12 @@
 
 <div style="text-align:center;">
 
-  <div class="container max-width">
-    <div class="row">
+  <div class="container max-width p-5">
+
       <!-- Login with Username and Password -->
-      <div class="col-md-6">
-        <div class="card">
+      <div class="d-flex justify-content-center">
+        <div class="card w-75 p-4 border border-top" style="max-width: 500px;">
+          {% if not session %}  
           <div class="card-body">
             <h1 class="card-title text-center">Login</h1>
             <div class="text-center mb-4">
@@ -26,15 +27,22 @@
               </div>
               <div class="msg"></div>
               <div class="navbar btn justify-content-center">
-                <button type="submit" class="btn btn-warning btn-block login-btn">Login</button>
+                <button type="submit" class="btn btn-primary login-btn">Login</button>
               </div>
             </form>
           </div>
+          {% else %}
+          <div class="card-body">
+            <h1 class="card-title text-center">You are already logged in as {{session['user']}}</h1>
+             <div class="text-center mb-4">
+            <a href="{{url_for('logout')}}" class="btn btn-warning">log out</a>
+          </div>
         </div>
+        {% endif %}
       </div>
   
      
-    </div>
+
   </div>
 
 </div>
