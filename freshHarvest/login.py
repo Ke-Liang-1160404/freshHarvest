@@ -7,37 +7,53 @@ from freshHarvest.models import PeopleModels, ProductModels, OrderPaymentModels
 from flask_hashing import Hashing
 
 hashing= Hashing(app)
-hashihng_salt="freshHarvest"
+hashing_salt="freshHarvest"
 
-#login page
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
         session.pop('user', None)
         
-        username= request.form['username']
-        password= request.form['password']
-        hashed_password=hashing.hash_value(password,hashihng_salt)
-        print(hashed_password)
+        username = request.form['username']
+        password = request.form['password']
+        hashed_password = hashing.hash_value(password, hashing_salt)
         
-        user= PeopleModels.Customer.query.filter_by(username=username).first_or_404()
-        print("here")
-        print("!!!!!!!",user)
-        print("here")
+        # Find user by username
+        user =PeopleModels.Person.query.filter_by(username=username).first()
+        
         if user:
-                is_valid= hashing.check_value(user.password,password,hashihng_salt)
-                print("check_password is", is_valid)
-                if is_valid:
-                  session['user']= user.username
-                  flash="login successfully"
-                  print("login")
-                  return redirect(url_for('index'))
-                else:
-                  print("not login")
-                  return render_template('login.html', flash="something wrong")
+            # Check password
+            is_valid = hashing.check_value(user.password, password, hashing_salt)
+            
+            if is_valid:
+                # Set session and role based on user type
+                session['user'] = user.username
+                staff_user = PeopleModels.Staff.query.filter_by(id=user.id).first()
+                if staff_user:
+                    session['role'] = 'staff'
+                # Check if the user is a CorporateCustomer
+                elif PeopleModels.CorporateCustomer.query.filter_by(id=user.id).first():
+                    session['role'] = 'corporate_customer'
+                # Check if the user is a Customer
+                elif PeopleModels.Customer.query.filter_by(id=user.id).first():
+                    session['role'] = 'customer'
+
+                # Redirect based on role
+                if session['role'] == 'staff':
+                    return redirect(url_for('staff_dashboard'))
+                elif session['role'] == 'corporate_customer':
+                    return redirect(url_for('customer_dashboard'))
+                elif session['role'] == 'customer':
+                    return redirect(url_for('customer_dashboard'))
+
+
+
+ 
+            else:
+                flash("Incorrect password, please try again.")
+        else:
+            flash("Username not found, please try again.")
         
-        return redirect(url_for('login'))
-    
     return render_template('login.html')
   
   
@@ -57,4 +73,4 @@ def all_customers():
     contents=ProductModels.PremadeBox.query.all()
     print(customers)
     print(staff,"/n",corporate,"/n",order,"/n",payment,"/n",creditsCards,"/n",debitCards,"/n",item,"/n",veggie,"/n",box,"/n",contents)
-    return render_template('base.html', customers= customers)  
+    return render_template('base.html', customers= customers) 

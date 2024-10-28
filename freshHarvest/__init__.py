@@ -6,7 +6,7 @@ import os
 import pymysql
 pymysql.install_as_MySQLdb()
 #load environment variables
-load_dotenv()
+load_dotenv('/home/KeLiang1160404/freshHarvest/.env')
 
 # Database configuration from environment variables
 DB_USER = os.getenv('DB_USER')
@@ -29,6 +29,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://{user}:{password}@{host}/{db_na
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db= SQLAlchemy(app)
 
-from freshHarvest import home, login
+from freshHarvest import home, login, staff_dashboard, customer_dashboard
 from freshHarvest.models import PeopleModels, ProductModels, OrderPaymentModels
 
