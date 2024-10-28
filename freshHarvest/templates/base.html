@@ -49,23 +49,35 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a href="#" class="btn btn-primary"
-                >Orders</a
-              >
-            </li>
-            <li class="nav-item">
-              <a href="#" class="btn btn-primary"
+              <a href="#" class="nav-link"
                 >Products</a
               >
             </li>
             <li class="nav-item">
-              <a href="#" class="btn btn-primary"
-                >Payments</a
+              <a href="#" class="nav-link"
+                >Orders</a
               >
             </li>
             <li class="nav-item">
-              <a href="{{url_for('login')}}" class="nav-link">Sign Up/Login</a>
+              <a href="#" class="nav-link"
+                >Payments</a
+              >
             </li>
+            
+            {% if not session %}
+            <li class="nav-item">
+              <a href="{{url_for('login')}}" class="btn btn-success">Sign Up/Login</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a href="#" class="nav-link"
+                >profile</a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="{{url_for('logout')}}" class="btn btn-danger">Logout</a> 
+            </li>
+            {% endif %}
           
           </ul>
         </div>
