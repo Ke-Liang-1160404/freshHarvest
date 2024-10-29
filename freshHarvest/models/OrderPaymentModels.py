@@ -1,6 +1,6 @@
 from freshHarvest import db
 from datetime import datetime
-
+from freshHarvest.models.ProductModels import Item
 
 
 class Payment(db.Model):
@@ -27,12 +27,23 @@ class DebitCardPayment(Payment):
 class Order(db.Model):
     __tablename__ = 'orders'
     id = db.Column(db.Integer, primary_key=True)
-    customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'))
+    customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'),nullable=False)
     staff_id = db.Column(db.Integer, db.ForeignKey('staff.id'))
     date = db.Column(db.DateTime, default=datetime.utcnow)
     status = db.Column(db.String(50), default='Pending')
-
+    total= db.Column(db.Float, nullable=False)    
     items = db.relationship('OrderLine', backref='order')
+    
+    def __init__(self, customer_id, staff_id): 
+        self.customer_id = customer_id
+        self.staff_id = staff_id
+        self.total = self.order_total()
+    
+    def order_total(self):
+        total = 0
+        for order_line in self.items:
+            total += order_line.order_line_total()
+        return total
 
 class OrderLine(db.Model):
     __tablename__ = 'order_lines'
@@ -42,3 +53,18 @@ class OrderLine(db.Model):
     quantity = db.Column(db.Integer, nullable=False)
     
     item = db.relationship('Item', backref='order_lines')
+    
+    def __init__ (self, order_id, item_id, quantity):
+        self.order_id = order_id
+        self.item_id = item_id
+        self.quantity = quantity
+    
+    def order_line_total(self):
+        veggie= Item.query.get(self.item_id) 
+        if veggie.price:
+            return veggie.price * self.quantity
+        else:
+            raise ValueError("Item does not have a price attribute.")
+          
+    def __repr__(self):
+        return f"OrderLine({self.order_id}, {self.item_id}, {self.quantity})"
