@@ -37,7 +37,7 @@ class Order(db.Model):
         total = 0
         for order_line in self.items:
             total += order_line.order_line_total()
-            total_price= round(total, 2)
+        total_price= round(total, 2)
         return total_price
       
     def __init__(self, customer_id): 
