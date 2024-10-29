@@ -33,16 +33,17 @@ class Order(db.Model):
     total= db.Column(db.Float, nullable=False)    
     items = db.relationship('OrderLine', backref='order')
     
-    def __init__(self, customer_id): 
-        self.customer_id = customer_id
-        self.total = self.order_total()
-    
     def order_total(self):
         total = 0
         for order_line in self.items:
             total += order_line.order_line_total()
             total_price= round(total, 2)
         return total_price
+      
+    def __init__(self, customer_id): 
+        self.customer_id = customer_id
+        self.total = self.order_total()
+    
 
 class OrderLine(db.Model):
     __tablename__ = 'order_lines'
