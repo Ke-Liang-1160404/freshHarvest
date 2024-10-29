@@ -28,6 +28,7 @@ def login():
             if is_valid:
                 # Set session and role based on user type
                 session['user'] = user.username
+                session['user_id'] = user.id
                 staff_user = PeopleModels.Staff.query.filter_by(id=user.id).first()
                 if staff_user:
                     session['role'] = 'staff'
@@ -59,8 +60,7 @@ def login():
   
 @app.route('/logout')
 def logout():
-    session.pop('user', None)
-    session.pop('role', None)
+    session.clear()
     return redirect(url_for('login'))
   
 @app.route('/all_customers')

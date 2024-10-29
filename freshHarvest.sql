@@ -63,13 +63,15 @@ CREATE TABLE orders (
     staff_id INT,
     date DATETIME DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(50) DEFAULT 'Pending',
+    total FLOAT DEFAULT 0.0,
     FOREIGN KEY (customer_id) REFERENCES customers (id),
     FOREIGN KEY (staff_id) REFERENCES staff (id)
 );
 
 CREATE TABLE items (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL
+    name VARCHAR(100) NOT NULL,
+    type ENUM('WeightedVeggie', 'PackVeggie', 'UnitPriceVeggie', 'BunchVeggie','PreMadeBoxed') NOT NULL
 );
 
 CREATE TABLE veggies (
@@ -80,7 +82,7 @@ CREATE TABLE veggies (
 CREATE TABLE weighted_veggies (
     id INT PRIMARY KEY,
     weight FLOAT,
-    price_per_kilo FLOAT,
+    price FLOAT,
     space_occupied FLOAT,
     FOREIGN KEY (id) REFERENCES veggies (id)
 );
@@ -88,7 +90,7 @@ CREATE TABLE weighted_veggies (
 CREATE TABLE pack_veggies (
     id INT PRIMARY KEY,
     num_of_pack INT,
-    price_per_pack FLOAT,
+    price FLOAT,
     space_occupied FLOAT,
 
     FOREIGN KEY (id) REFERENCES veggies (id)
@@ -96,7 +98,7 @@ CREATE TABLE pack_veggies (
 
 CREATE TABLE unit_price_veggies (
     id INT PRIMARY KEY,
-    price_per_unit FLOAT,
+    price FLOAT,
     space_occupied FLOAT,
 
     FOREIGN KEY (id) REFERENCES veggies (id)
@@ -104,7 +106,7 @@ CREATE TABLE unit_price_veggies (
 
 CREATE TABLE bunch_veggies (
     id INT PRIMARY KEY,
-    price_per_bunch FLOAT,
+    price FLOAT,
     num_of_bunch INT,
     space_occupied FLOAT,
     FOREIGN KEY (id) REFERENCES veggies (id)
@@ -191,33 +193,34 @@ VALUES
 
 
 
-INSERT INTO items (name) 
+INSERT INTO items (name, type) 
 VALUES 
 -- Veggies by weight
-('Carrot'),  
-('Tomato'),  
-('Ginger'),  
-('Potato'),  
-('Onion'), 
+('Carrot','WeightedVeggie'),  
+('Tomato','WeightedVeggie'),  
+('Ginger','WeightedVeggie'),  
+('Potato','WeightedVeggie'),  
+('Onion','WeightedVeggie'),
+
 -- Veggies by pack 
-('Lettuce'),  
-('Garlic'),  
-('Spinach'),  
-('Bai Choy'),  
+('Lettuce', 'PackVeggie'),  
+('Garlic','PackVeggie'),  
+('Spinach','PackVeggie'),  
+('Bai Choy','PackVeggie'),  
 
 -- Veggies by unit price 
-('pumpkin'),  
-('Eggplant'),  
-('Capsicum'),  
-('Cucumber'),  
-('Broccoli'),  
-('Cauliflower'), 
-('Celery'),  
+('pumpkin','UnitPriceVeggie'),  
+('Capsicum','UnitPriceVeggie'),  
+('Eggplant','UnitPriceVeggie'),  
+('Cucumber','UnitPriceVeggie'),  
+('Broccoli','UnitPriceVeggie'),  
+('Cauliflower','UnitPriceVeggie'), 
+('Celery','UnitPriceVeggie'),  
 -- bunch veggies 
-('Asparagus'),  
-('Leek'),  
-('Spring Onion'),  
-('Coriander');
+('Asparagus', 'BunchVeggie'),  
+('Leek','BunchVeggie'),  
+('Spring Onion','BunchVeggie'),  
+('Coriander','BunchVeggie');
 
 
 INSERT INTO veggies (id) 
@@ -243,7 +246,7 @@ VALUES
 (19),  
 (20);
 
-INSERT INTO weighted_veggies (id, weight, price_per_kilo,space_occupied) 
+INSERT INTO weighted_veggies (id, weight, price,space_occupied) 
 VALUES 
 (1, 1.0, 1.79, 1.5),  
 (2, 1.0, 6.99, 1),  
@@ -252,7 +255,7 @@ VALUES
 (5, 1.0, 3.49, 1.5);
 
 
-INSERT INTO pack_veggies (id, num_of_pack, price_per_pack, space_occupied) 
+INSERT INTO pack_veggies (id, num_of_pack, price, space_occupied) 
 VALUES 
 (6, 1, 3.99, 0.5),  
 (7, 1, 4.49, 0.2),  
@@ -260,7 +263,7 @@ VALUES
 (9, 1, 2.29, 0.5);
 
 
-INSERT INTO unit_price_veggies (id, price_per_unit, space_occupied) 
+INSERT INTO unit_price_veggies (id, price, space_occupied) 
 VALUES 
 (10, 8.99, 3),  
 (11, 2.49, 1),  
@@ -270,7 +273,7 @@ VALUES
 (15, 3.49, 2),
 (16, 4.49, 3);
 
-INSERT INTO bunch_veggies (id, price_per_bunch, num_of_bunch, space_occupied)
+INSERT INTO bunch_veggies (id, price, num_of_bunch, space_occupied)
 VALUES 
 (17, 5, 2, 1),  
 (18, 2.99, 1, 0.5),  
@@ -291,12 +294,3 @@ VALUES
 (2, 4, 3),  
 (3, 5, 10),  
 (3, 6, 4);
-
-INSERT INTO order_lines (order_id, item_id, quantity) 
-VALUES 
-(1, 1, 2),  
-(1, 2, 1),  
-(2, 3, 3),  
-(2, 4, 2),  
-(1, 5, 1),  
-(2, 6, 1);

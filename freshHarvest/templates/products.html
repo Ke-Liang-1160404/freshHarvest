@@ -9,14 +9,20 @@
     <h3 class="mt-5">Veggies by Weight</h3>
     <div class="row">
         {% for veggie in products.weighted_veggies %}
-        <div class="col-md-3">
-            <div class="card mb-4 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">{{ veggie.name }}</h5>
-                    <p>Price: ${{ veggie.price_per_kilo }}/kg</p>
-                </div>
-            </div>
-        </div>
+            <div class="col-md-3">
+              <div class="card mb-4 shadow-sm">
+                  <div class="card-body">
+                      <h5 class="card-title">{{ veggie.name }}</h5>
+                      <p>Price: ${{ veggie.price_per_kilo }}/kg</p>
+                      <form action="{{ url_for('add_to_cart') }}" method="post" class="d-flex align-items-center">
+                          <input type="hidden" name="veggie_id" value="{{ veggie.id }}">
+                          <label for="quantity" class="me-2 mb-0" style="font-size: 0.9em;">Select Amount:</label>
+                          <input type="number" name="quantity" class="form-control form-control-sm me-2" min="1" max="100" required style="width: 50px;">
+                          <button type="submit" class="btn btn-success btn-sm">Add to Cart</button>
+                      </form>
+                  </div>
+              </div>
+          </div>
         {% endfor %}
     </div>
 
@@ -25,21 +31,19 @@
     <div class="row">
         {% for veggie in products.pack_veggies %}
         <div class="col-md-3">
-            <div class="card mb-4 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">{{ veggie.name }}</h5>
-                    <p>Price: ${{ veggie.price_per_pack }}/Pack</p>
-                    <form action="{{ url_for('add_to_cart') }}" method="post">
+          <div class="card mb-4 shadow-sm">
+              <div class="card-body">
+                  <h5 class="card-title">{{ veggie.name }}</h5>
+                  <p>Price: ${{ veggie.price_per_pack }}/Pack</p>
+                  <form action="{{ url_for('add_to_cart') }}" method="post" class="d-flex align-items-center">
                       <input type="hidden" name="veggie_id" value="{{ veggie.id }}">
-                      <div class="form-group">
-                          <label for="quantity">Select Amount:</label>
-                          <input type="number" name="quantity" class="form-control" min="1" max="100" required>
-                      </div>
-                      <button type="submit" class="btn btn-primary btn-block">Add to Cart</button>
+                      <label for="quantity" class="me-2 mb-0" style="font-size: 0.9em;">Select Amount:</label>
+                      <input type="number" name="quantity" class="form-control form-control-sm me-2" min="1" max="100" required style="width: 50px;">
+                      <button type="submit" class="btn btn-success btn-sm">Add to Cart</button>
                   </form>
-                </div>
-            </div>
-        </div>
+              </div>
+          </div>
+      </div>
         {% endfor %}
     </div>
 
@@ -48,22 +52,19 @@
     <div class="row">
         {% for veggie in products.unit_price_veggies %}
         <div class="col-md-3">
-            <div class="card mb-4 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">{{ veggie.name }}</h5>
-
-                    <p>Price: ${{ veggie.price_per_unit }}/Each</p>
-                    <form action="{{ url_for('add_to_cart') }}" method="post">
+          <div class="card mb-4 shadow-sm">
+              <div class="card-body">
+                  <h5 class="card-title">{{ veggie.name }}</h5>
+                  <p>Price: ${{ veggie.price_per_unit }}/Each</p>
+                  <form action="{{ url_for('add_to_cart') }}" method="post" class="d-flex align-items-center">
                       <input type="hidden" name="veggie_id" value="{{ veggie.id }}">
-                      <div class="form-group">
-                          <label for="quantity">Select Amount:</label>
-                          <input type="number" name="quantity" class="form-control" min="1" max="100" required>
-                      </div>
-                      <button type="submit" class="btn btn-primary btn-block">Add to Cart</button>
+                      <label for="quantity" class="me-2 mb-0" style="font-size: 0.9em;">Select Amount:</label>
+                      <input type="number" name="quantity" class="form-control form-control-sm me-2" min="1" max="100" required style="width: 50px;">
+                      <button type="submit" class="btn btn-success btn-sm">Add to Cart</button>
                   </form>
-                </div>
-            </div>
-        </div>
+              </div>
+          </div>
+      </div>
         {% endfor %}
     </div>
 
@@ -72,22 +73,19 @@
     <div class="row">
         {% for veggie in products.bunch_veggies %}
         <div class="col-md-3">
-            <div class="card mb-4 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">{{ veggie.name }}</h5>
-                    <p>Number: {{ veggie.num_of_bunch }}</p>
-                    <p>Price: ${{ veggie.price_per_bunch }}/Bunch</p>
-                    <form action="{{ url_for('add_to_cart') }}" method="post">
+          <div class="card mb-4 shadow-sm">
+              <div class="card-body">
+                  <h5 class="card-title">{{ veggie.name }}</h5>
+                  <p>Price: ${{ veggie.price_per_bunch }}/Bunch</p>
+                  <form action="{{ url_for('add_to_cart') }}" method="post" class="d-flex align-items-center">
                       <input type="hidden" name="veggie_id" value="{{ veggie.id }}">
-                      <div class="form-group">
-                          <label for="quantity">Select Amount:</label>
-                          <input type="number" name="quantity" class="form-control" min="1" max="100" required>
-                      </div>
-                      <button type="submit" class="btn btn-primary btn-block">Add to Cart</button>
+                      <label for="quantity" class="me-2 mb-0" style="font-size: 0.9em;">Select Amount:</label>
+                      <input type="number" name="quantity" class="form-control form-control-sm me-2" min="1" max="100" required style="width: 50px;">
+                      <button type="submit" class="btn btn-success btn-sm">Add to Cart</button>
                   </form>
-                </div>
-            </div>
-        </div>
+              </div>
+          </div>
+      </div>
         {% endfor %}
     </div>
 </div>
