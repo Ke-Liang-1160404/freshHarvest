@@ -28,22 +28,21 @@ class Order(db.Model):
     __tablename__ = 'orders'
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'),nullable=False)
-    staff_id = db.Column(db.Integer, db.ForeignKey('staff.id'))
     date = db.Column(db.DateTime, default=datetime.utcnow)
     status = db.Column(db.String(50), default='Pending')
     total= db.Column(db.Float, nullable=False)    
     items = db.relationship('OrderLine', backref='order')
     
-    def __init__(self, customer_id, staff_id): 
+    def __init__(self, customer_id): 
         self.customer_id = customer_id
-        self.staff_id = staff_id
         self.total = self.order_total()
     
     def order_total(self):
         total = 0
         for order_line in self.items:
             total += order_line.order_line_total()
-        return total
+            total_price= round(total, 2)
+        return total_price
 
 class OrderLine(db.Model):
     __tablename__ = 'order_lines'
@@ -62,7 +61,10 @@ class OrderLine(db.Model):
     def order_line_total(self):
         veggie= Item.query.get(self.item_id) 
         if veggie.price:
-            return veggie.price * self.quantity
+            total_price=veggie.price * self.quantity
+            print(total_price)
+            total=round(total_price, 2)
+            return total
         else:
             raise ValueError("Item does not have a price attribute.")
           

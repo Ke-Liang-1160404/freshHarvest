@@ -60,17 +60,16 @@ CREATE TABLE debit_card_payments (
 CREATE TABLE orders (
     id INT PRIMARY KEY AUTO_INCREMENT,
     customer_id INT,
-    staff_id INT,
     date DATETIME DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(50) DEFAULT 'Pending',
     total FLOAT DEFAULT 0.0,
-    FOREIGN KEY (customer_id) REFERENCES customers (id),
-    FOREIGN KEY (staff_id) REFERENCES staff (id)
+    FOREIGN KEY (customer_id) REFERENCES customers (id)
 );
 
 CREATE TABLE items (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
+    price FLOAT,  
     type ENUM('WeightedVeggie', 'PackVeggie', 'UnitPriceVeggie', 'BunchVeggie','PreMadeBoxed') NOT NULL
 );
 
@@ -82,7 +81,6 @@ CREATE TABLE veggies (
 CREATE TABLE weighted_veggies (
     id INT PRIMARY KEY,
     weight FLOAT,
-    price FLOAT,
     space_occupied FLOAT,
     FOREIGN KEY (id) REFERENCES veggies (id)
 );
@@ -90,7 +88,6 @@ CREATE TABLE weighted_veggies (
 CREATE TABLE pack_veggies (
     id INT PRIMARY KEY,
     num_of_pack INT,
-    price FLOAT,
     space_occupied FLOAT,
 
     FOREIGN KEY (id) REFERENCES veggies (id)
@@ -98,7 +95,6 @@ CREATE TABLE pack_veggies (
 
 CREATE TABLE unit_price_veggies (
     id INT PRIMARY KEY,
-    price FLOAT,
     space_occupied FLOAT,
 
     FOREIGN KEY (id) REFERENCES veggies (id)
@@ -106,7 +102,6 @@ CREATE TABLE unit_price_veggies (
 
 CREATE TABLE bunch_veggies (
     id INT PRIMARY KEY,
-    price FLOAT,
     num_of_bunch INT,
     space_occupied FLOAT,
     FOREIGN KEY (id) REFERENCES veggies (id)
@@ -168,59 +163,34 @@ VALUES
 (4, 0.10, 5000.0, 100.0);  
 
 
-INSERT INTO payments (amount, customer_id) 
-VALUES 
-(25.0, 3),  
-(15.0, 4);
-
-
-INSERT INTO credit_card_payments (id, card_number, card_type, expiry_date) 
-VALUES 
-(1, '1234567812345678', 'Visa', '12/25'),  
-(2, '8765432187654321', 'MasterCard', '01/26');
-
-
-INSERT INTO debit_card_payments (id, bank_name, card_number) 
-VALUES 
-(1, 'Bank of America', '1122334455667788'),  
-(2, 'Chase', '9988776655443322');
-
-
-INSERT INTO orders (customer_id, staff_id) 
-VALUES 
-(3, 1),  
-(4, 2);
-
-
-
-INSERT INTO items (name, type) 
+INSERT INTO items (name, type,price) 
 VALUES 
 -- Veggies by weight
-('Carrot','WeightedVeggie'),  
-('Tomato','WeightedVeggie'),  
-('Ginger','WeightedVeggie'),  
-('Potato','WeightedVeggie'),  
-('Onion','WeightedVeggie'),
+('Carrot','WeightedVeggie',1.79),  
+('Tomato','WeightedVeggie',6.99),  
+('Ginger','WeightedVeggie',9.99),  
+('Potato','WeightedVeggie',2.79),  
+('Onion','WeightedVeggie',2.79),
 
 -- Veggies by pack 
-('Lettuce', 'PackVeggie'),  
-('Garlic','PackVeggie'),  
-('Spinach','PackVeggie'),  
-('Bai Choy','PackVeggie'),  
+('Lettuce', 'PackVeggie',2.49),  
+('Garlic','PackVeggie',2.99),  
+('Spinach','PackVeggie',4.99),  
+('Bai Choy','PackVeggie',0.99),  
 
 -- Veggies by unit price 
-('pumpkin','UnitPriceVeggie'),  
-('Capsicum','UnitPriceVeggie'),  
-('Eggplant','UnitPriceVeggie'),  
-('Cucumber','UnitPriceVeggie'),  
-('Broccoli','UnitPriceVeggie'),  
-('Cauliflower','UnitPriceVeggie'), 
-('Celery','UnitPriceVeggie'),  
+('pumpkin','UnitPriceVeggie', 4.49),  
+('Capsicum','UnitPriceVeggie', 1.70),  
+('Eggplant','UnitPriceVeggie', 1.99),  
+('Cucumber','UnitPriceVeggie', 2.49),  
+('Broccoli','UnitPriceVeggie',1.99),  
+('Cauliflower','UnitPriceVeggie', 3.49), 
+('Celery','UnitPriceVeggie',4.49),  
 -- bunch veggies 
-('Asparagus', 'BunchVeggie'),  
-('Leek','BunchVeggie'),  
-('Spring Onion','BunchVeggie'),  
-('Coriander','BunchVeggie');
+('Asparagus', 'BunchVeggie',5),  
+('Leek','BunchVeggie', 2.99),  
+('Spring Onion','BunchVeggie', 1.99),  
+('Coriander','BunchVeggie', 1.49);
 
 
 INSERT INTO veggies (id) 
@@ -246,39 +216,39 @@ VALUES
 (19),  
 (20);
 
-INSERT INTO weighted_veggies (id, weight, price,space_occupied) 
+INSERT INTO weighted_veggies (id, weight,space_occupied) 
 VALUES 
-(1, 1.0, 1.79, 1.5),  
-(2, 1.0, 6.99, 1),  
-(3, 1.0, 9.99, 2),  
-(4, 1.0, 2.99, 1.5),  
-(5, 1.0, 3.49, 1.5);
+(1, 1.0, 1.5),  
+(2, 1.0, 1),  
+(3, 1.0, 2),  
+(4, 1.0, 1.5),  
+(5, 1.0, 1.5);
 
 
-INSERT INTO pack_veggies (id, num_of_pack, price, space_occupied) 
+INSERT INTO pack_veggies (id, num_of_pack, space_occupied) 
 VALUES 
-(6, 1, 3.99, 0.5),  
-(7, 1, 4.49, 0.2),  
-(8, 1, 5.39, 0.5),  
-(9, 1, 2.29, 0.5);
+(6, 1, 0.5),  
+(7, 1, 0.2),  
+(8, 1, 0.5),  
+(9, 1, 0.5);
 
 
-INSERT INTO unit_price_veggies (id, price, space_occupied) 
+INSERT INTO unit_price_veggies (id, space_occupied) 
 VALUES 
-(10, 8.99, 3),  
-(11, 2.49, 1),  
-(12, 1.79, 0.5),  
-(13, 2.49, 0.8),  
-(14, 1.99, 1.5),  
-(15, 3.49, 2),
-(16, 4.49, 3);
+(10, 3),  
+(11, 1),  
+(12, 0.5),  
+(13, 0.8),  
+(14, 1.5),  
+(15, 2),
+(16, 3);
 
-INSERT INTO bunch_veggies (id, price, num_of_bunch, space_occupied)
+INSERT INTO bunch_veggies (id, num_of_bunch, space_occupied)
 VALUES 
-(17, 5, 2, 1),  
-(18, 2.99, 1, 0.5),  
-(19, 1.99, 1, 0.2),  
-(20, 1.49, 1, 0.2);
+(17, 2, 1),  
+(18, 1, 0.5),  
+(19, 1, 0.2),  
+(20, 1, 0.2);
 
 INSERT INTO premade_boxes (id, size, space, price) 
 VALUES 

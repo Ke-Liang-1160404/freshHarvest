@@ -20,7 +20,7 @@ class Staff(Person):
     dept_name = db.Column(db.String(100))
 
 
-    orders = db.relationship('Order', backref='staff')
+
 
 # --- Customer Base Class ---
 class Customer(Person):

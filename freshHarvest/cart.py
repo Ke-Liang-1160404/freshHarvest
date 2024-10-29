@@ -14,20 +14,21 @@ def cart():
     elif session.get('role') in ['customer', 'corporate_customer']:
         customer_id = session['user_id']
         order = Order.query.filter_by(customer_id=customer_id, status='Pending').first()
-
+        print("order",order)
         if order:
             order_lines = (
-            OrderLine.query
-            .join(Item, OrderLine.item_id == Item.id)
-            .join(Order, OrderLine.order_id == Order.id)     
-            .add_columns(Item.name, Item.type)        
-            .all()
-        )
-            print("order_lines",order_lines)  
-            # Access and print each order line along with its associated item details
-            for order_line, item_name,item_type in order_lines:
-                print(order_line)
-                print(f"Item name: {item_name}, Quantity: {order_line.quantity} ") 
+                OrderLine.query
+                .join(Item, OrderLine.item_id == Item.id)
+                .add_columns(Item.name, Item.type, Item.price)
+                .filter(OrderLine.order_id == order.id)
+                .all()
+            )
+            # Iterate through order_lines to see the results
+            print(order_lines)
+            for order_lien, line_item_name,line_item_type, line_item_price in order_lines:
+              print(f"Item Name: {line_item_name}, Item Type: {line_item_type}, "
+                f"Item Price: {line_item_price}"
+                f"{order_lien}")
         else:
             order_lines = []
 
@@ -46,8 +47,7 @@ def add_to_cart():
 
     # Retrieve the veggie by ID to get its details
     veggie = Veggie.query.get(veggie_id)
-    print("veggie",veggie)
-    print(f"The veggie is of type: {veggie.__class__.__name__}")
+
 
 
     weighted_veggie = WeightedVeggie.query.get(veggie_id)
@@ -63,6 +63,9 @@ def add_to_cart():
         veggie_type = "UnitPriceVeggie"
 
         unit_type = 'unit'
+    elif BunchVeggie.query.get(veggie_id):
+        veggie_type="BunchVeggie"
+        unit_type="Buch"
     else:
         flash("Unknown veggie type.")
         return redirect(url_for('products'))
@@ -75,7 +78,7 @@ def add_to_cart():
     
     # If there's no existing pending order, create a new one
     if not order:
-        order = Order(customer_id=customer_id, staff_id=None)  # staff_id can be set to None or a valid ID
+        order = Order(customer_id=customer_id)  # staff_id can be set to None or a valid ID
         db.session.add(order)
         db.session.commit()  # Commit to get the order ID
 
@@ -87,7 +90,8 @@ def add_to_cart():
     else:
         order_line = OrderLine(order_id=order.id, item_id=veggie_id, quantity=quantity)
         db.session.add(order_line)
-
+        
+    print("order_line",order_line)  
     db.session.commit()  # Save changes to the database
 
     flash(f"{quantity} {unit_type}(s) of {veggie.name} added to your cart!")

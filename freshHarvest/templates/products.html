@@ -13,7 +13,7 @@
               <div class="card mb-4 shadow-sm">
                   <div class="card-body">
                       <h5 class="card-title">{{ veggie.name }}</h5>
-                      <p>Price: ${{ veggie.price_per_kilo }}/kg</p>
+                      <p>Price: ${{ veggie.price }}/kg</p>
                       <form action="{{ url_for('add_to_cart') }}" method="post" class="d-flex align-items-center">
                           <input type="hidden" name="veggie_id" value="{{ veggie.id }}">
                           <label for="quantity" class="me-2 mb-0" style="font-size: 0.9em;">Select Amount:</label>
@@ -34,7 +34,7 @@
           <div class="card mb-4 shadow-sm">
               <div class="card-body">
                   <h5 class="card-title">{{ veggie.name }}</h5>
-                  <p>Price: ${{ veggie.price_per_pack }}/Pack</p>
+                  <p>Price: ${{ veggie.price }}/Pack</p>
                   <form action="{{ url_for('add_to_cart') }}" method="post" class="d-flex align-items-center">
                       <input type="hidden" name="veggie_id" value="{{ veggie.id }}">
                       <label for="quantity" class="me-2 mb-0" style="font-size: 0.9em;">Select Amount:</label>
@@ -55,7 +55,7 @@
           <div class="card mb-4 shadow-sm">
               <div class="card-body">
                   <h5 class="card-title">{{ veggie.name }}</h5>
-                  <p>Price: ${{ veggie.price_per_unit }}/Each</p>
+                  <p>Price: ${{ veggie.price }}/Each</p>
                   <form action="{{ url_for('add_to_cart') }}" method="post" class="d-flex align-items-center">
                       <input type="hidden" name="veggie_id" value="{{ veggie.id }}">
                       <label for="quantity" class="me-2 mb-0" style="font-size: 0.9em;">Select Amount:</label>
@@ -76,7 +76,7 @@
           <div class="card mb-4 shadow-sm">
               <div class="card-body">
                   <h5 class="card-title">{{ veggie.name }}</h5>
-                  <p>Price: ${{ veggie.price_per_bunch }}/Bunch</p>
+                  <p>Price: ${{ veggie.price }}/Bunch</p>
                   <form action="{{ url_for('add_to_cart') }}" method="post" class="d-flex align-items-center">
                       <input type="hidden" name="veggie_id" value="{{ veggie.id }}">
                       <label for="quantity" class="me-2 mb-0" style="font-size: 0.9em;">Select Amount:</label>
