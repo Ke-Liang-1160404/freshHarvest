@@ -84,15 +84,70 @@ def add_to_cart():
 
     # Create or update the order line
     order_line = OrderLine.query.filter_by(order_id=order.id, item_id=veggie_id).first()
-    
+   
     if order_line:
         order_line.quantity += quantity  # Update quantity if the item is already in the order
+        
     else:
         order_line = OrderLine(order_id=order.id, item_id=veggie_id, quantity=quantity)
+      
+        
         db.session.add(order_line)
         
-    print("order_line",order_line)  
+    # Update the total price of the order
+    order.total = order.order_total()
+    
+    
     db.session.commit()  # Save changes to the database
 
     flash(f"{quantity} {unit_type}(s) of {veggie.name} added to your cart!")
     return redirect(url_for('products'))
+  
+  
+@app.route('/update_cart', methods=['POST'])
+def update_cart():
+    if 'user' not in session:
+        flash("Please log in to update items in your cart.")
+        return redirect(url_for('login'))
+
+    order_item_id = request.form.get('order_item_id')
+    quantity = int(request.form.get('quantity'))
+
+    order_line = OrderLine.query.get(order_item_id)
+    if order_line:
+        if quantity > 0:
+            order_line.quantity = quantity
+            flash("Cart updated successfully!")
+        else:
+            flash("Quantity must be greater than zero.")
+    else:
+        flash("Item not found in cart.")
+    # Update the total price of the order
+    order = Order.query.get(order_line.order_id)
+    order.total = order.order_total()
+    db.session.commit()
+    return redirect(url_for('cart'))
+
+
+@app.route('/remove_from_cart', methods=['POST'])
+def remove_from_cart():
+    if 'user' not in session:
+        flash("Please log in to remove items from your cart.")
+        return redirect(url_for('login'))
+
+    order_item_id = request.form.get('order_item_id')
+
+    order_line = OrderLine.query.get(order_item_id)
+    if order_line:
+        db.session.delete(order_line)
+         # Update the total price of the order
+        order = Order.query.get(order_line.order_id)
+        order.total = order.order_total()
+
+        db.session.commit()
+        flash("Item removed from cart!")
+    else:
+        flash("Item not found in cart.")
+        
+   
+    return redirect(url_for('cart'))
