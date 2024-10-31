@@ -105,7 +105,6 @@ def checkout():
                     customer_id=customer_id,
                     bank_name=bank_name,
                     card_number=card_number,
-                    type='debit_card'
                 )
                 db.session.add(payment)
             else:
