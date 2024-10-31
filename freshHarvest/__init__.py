@@ -14,7 +14,6 @@ DB_PASSWORD = os.getenv('DB_PASSWORD')
 DB_HOST = os.getenv('DB_HOST')
 DB_NAME = os.getenv('DB_NAME')
 
-print("11111",DB_USER, DB_PASSWORD, DB_HOST, DB_NAME)
 
 
 app= Flask(__name__)

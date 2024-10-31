@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block title %}Customer Dashboard{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Select Sales Period</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form id="salesForm" class="border p-4 rounded bg-light">
+                <div class="mb-3">
+                    <label for="start_date" class="form-label">Start Date:</label>
+                    <input type="date" id="start_date" name="start_date" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="end_date" class="form-label">End Date:</label>
+                    <input type="date" id="end_date" name="end_date" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Get Sales Data</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="mt-4 text-center">
+        <h3>Total Sales: <span id="totalSales">$0.00</span></h3>
+        <h4>Most Popular Item: <span id="mostPopularItem">None</span> (Quantity: <span id="maxQuantity">0</span>)</h4>
+    </div>
+
+    <div class="mt-4">
+        <canvas id="salesChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Set default date range to the last 7 days
+    document.addEventListener('DOMContentLoaded', () => {
+        const today = new Date();
+        const lastWeek = new Date();
+        lastWeek.setDate(today.getDate() - 7);
+
+        document.getElementById('start_date').value = lastWeek.toISOString().split('T')[0];
+        document.getElementById('end_date').value = today.toISOString().split('T')[0];
+
+        // Automatically fetch data for the default date range
+        fetchSalesData();
+    });
+
+    document.getElementById('salesForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        fetchSalesData();
+    });
+
+    async function fetchSalesData() {
+    const startDate = document.getElementById('start_date').value;
+    const endDate = document.getElementById('end_date').value;
+    const response = await fetch(`/api/sales_data?start_date=${startDate}&end_date=${endDate}`);
+    const data = await response.json();
+
+    if (response.ok) {
+        renderChart(data.labels, data.totals_quantity, data.totals_revenue);
+        updateSummary(data.totals_quantity, data.most_popular_item, data.max_quantity);
+    } else {
+        alert(data.error || 'Error fetching sales data.');
+    }
+}
+
+function renderChart(labels, totalsQuantity, totalsRevenue) {
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    if (window.salesChart instanceof Chart) {
+        window.salesChart.destroy();
+    }
+
+    window.salesChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Total Quantity Sold',
+                    data: totalsQuantity,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: true
+                },
+                {
+                    label: 'Total Sales Revenue',
+                    data: totalsRevenue,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: { title: { display: true, text: 'Date' } },
+                y: { title: { display: true, text: 'Amount ($)' } }
+            },
+            plugins: {
+                legend: { display: true }
+            }
+        }
+    });
+}
+
+    function updateSummary(totals, mostPopularItem, maxQuantity) {
+    const totalSales = totals.reduce((acc, val) => acc + val, 0);
+    const numDays = totals.length;
+    const avgDailySales = numDays > 0 ? totalSales / numDays : 0;
+
+    document.getElementById('totalSales').innerText = `$${totalSales.toFixed(2)}`;
+
+    
+    // Display the most popular item
+    document.getElementById('mostPopularItem').innerText = mostPopularItem || 'No sales data';
+    document.getElementById('maxQuantity').innerText = maxQuantity || '0';
+}
+
+</script>
+{% endblock content %}

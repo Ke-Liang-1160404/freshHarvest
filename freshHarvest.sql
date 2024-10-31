@@ -168,20 +168,20 @@ VALUES
 
 INSERT INTO items (name, type,price) 
 VALUES 
--- Veggies by weight
+
 ('Carrot','weighted_veggies',1.79),  
 ('Tomato','weighted_veggies',6.99),  
 ('Ginger','weighted_veggies',9.99),  
 ('Potato','weighted_veggies',2.79),  
 ('Onion','weighted_veggies',2.79),
 
--- Veggies by pack 
+
 ('Lettuce', 'pack_veggies',2.49),  
 ('Garlic','pack_veggies',2.99),  
 ('Spinach','pack_veggies',4.99),  
 ('Bai Choy','pack_veggies',0.99),  
 
--- Veggies by unit price 
+
 ('pumpkin','unit_price_veggies', 4.49),  
 ('Capsicum','unit_price_veggies', 1.70),  
 ('Eggplant','unit_price_veggies', 1.99),  
@@ -189,13 +189,13 @@ VALUES
 ('Broccoli','unit_price_veggies',1.99),  
 ('Cauliflower','unit_price_veggies', 3.49), 
 ('Celery','unit_price_veggies',4.49),  
--- bunch veggies 
+
 ('Asparagus', 'bunch_veggies',5),  
 ('Leek','bunch_veggies', 2.99),  
 ('Spring Onion','bunch_veggies', 1.99),  
 ('Coriander','bunch_veggies', 1.49),
 
--- premade boxes 
+
 ('Small Box', 'premade_box', 0.50),  
 ('Medium Box', 'premade_box', 1.00),  
 ('Large Box', 'premade_box', 1.50);  
@@ -272,3 +272,74 @@ VALUES
 (22, 4, 3),  
 (23, 5, 10),  
 (23, 6, 4);
+
+
+
+INSERT INTO orders (customer_id, date, status, total) VALUES
+(3, '2024-01-15 10:00:00', 'Completed', 45.50), 
+(4, '2024-01-20 11:30:00', 'Completed', 20.75), 
+(3, '2024-02-05 14:00:00', 'Completed', 30.00), 
+(3, '2024-03-10 09:15:00', 'Completed', 25.00), 
+(4, '2024-04-15 12:00:00', 'Completed', 15.50), 
+(3, '2024-05-05 15:30:00', 'Completed', 55.00), 
+(4, '2024-06-01 16:00:00', 'Completed', 10.25), 
+(3, '2024-06-15 14:00:00', 'Completed', 40.00), 
+(4, '2024-07-20 17:30:00', 'Completed', 22.50), 
+(3, '2024-08-10 13:00:00', 'Completed', 75.00),  
+(4, '2024-09-01 11:00:00', 'Completed', 18.00),  
+(3, '2024-09-15 09:45:00', 'Completed', 60.00),  
+(4, '2024-10-25 16:30:00', 'Completed', 30.00),  
+(3, '2024-10-27 14:00:00', 'Completed', 55.00),  
+(4, '2024-10-30 12:00:00', 'Completed', 20.00);  
+
+
+
+INSERT INTO payments (amount, date, customer_id, type) VALUES
+(45.50, '2024-01-15 10:05:00', 3, 'credit_card'),  
+(20.75, '2024-01-20 11:35:00', 4, 'debit_card'),   
+(30.00, '2024-02-05 14:05:00', 3, 'credit_card'),  
+(25.00, '2024-03-10 09:20:00', 3, 'debit_card'),   
+(15.50, '2024-04-15 12:05:00', 4, 'credit_card'),  
+(55.00, '2024-05-05 15:35:00', 3, 'debit_card'),   
+(10.25, '2024-06-01 16:05:00', 4, 'credit_card'),  
+(40.00, '2024-06-15 14:05:00', 3, 'debit_card'),   
+(22.50, '2024-07-20 17:35:00', 4, 'credit_card'),  
+(75.00, '2024-08-10 13:05:00', 3, 'debit_card'),   
+(18.00, '2024-09-01 11:05:00', 4, 'credit_card'),  
+(60.00, '2024-09-15 09:50:00', 3, 'debit_card'),   
+(30.00, '2024-10-25 16:35:00', 4, 'credit_card'),  
+(55.00, '2024-10-27 14:05:00', 3, 'debit_card'),   
+(20.00, '2024-10-30 12:05:00', 4, 'credit_card');  
+
+
+
+INSERT INTO order_lines (order_id, item_id, quantity) VALUES
+(1, 1, 3),  
+(1, 2, 2),  
+(2, 3, 2),  
+(2, 4, 1),  
+(3, 4, 1),  
+(3, 5, 3),  
+(4, 1, 1),  
+(4, 6, 2),  
+(5, 6, 3),  
+(6, 2, 1),  
+(6, 3, 2),  
+(7, 7, 3),  
+(7, 8, 1),  
+(8, 1, 1),  
+(8, 10, 2), 
+(9, 9, 2),  
+(9, 11, 1), 
+(10, 10, 1), 
+(10, 12, 3), 
+(11, 12, 2), 
+(11, 13, 1), 
+(12, 13, 3), 
+(12, 14, 1), 
+(13, 14, 2), 
+(13, 15, 1), 
+(14, 15, 1), 
+(14, 16, 5), 
+(15, 1, 2),  
+(15, 16, 1);  
