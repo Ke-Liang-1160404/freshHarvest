@@ -66,6 +66,7 @@
           <h4>Sub Total: ${{ order.order_total() }}</h4>    
     </div>
     <div class="text-end mt-3">
+          <a href="#" onclick="confirmClearCart()"  class="btn btn-danger">Cancel Order</a>
           <a href="{{ url_for('checkout') }}" class="btn btn-success">Proceed to Checkout</a>
     </div>
     {% else %}
@@ -74,4 +75,14 @@
     </div>
     {% endif %}
 </div>
+
+<script>
+  function confirmClearCart() {
+    // Show confirmation dialog
+    if (confirm("Are you sure you want to clear the cart? This action cannot be undone.")) {
+        // If confirmed, redirect to the clear_cart route
+        window.location.href = "{{ url_for('clear_cart') }}";
+    }
+}
+</script>
 {% endblock content %}

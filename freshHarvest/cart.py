@@ -151,3 +151,21 @@ def remove_from_cart():
         
    
     return redirect(url_for('cart'))
+
+
+
+@app.route('/clear_cart')
+def clear_cart():
+    if 'user' not in session:
+        flash("Please log in to clear your cart.")
+        return redirect(url_for('login'))
+
+    customer_id = session['user_id']
+    order = Order.query.filter_by(customer_id=customer_id, status='Pending').first()
+    if order:
+        db.session.delete(order)
+        db.session.commit()
+        flash("Cart cleared successfully!")
+    else:
+        flash("No pending order found.")
+    return redirect(url_for('cart'))  

@@ -39,6 +39,7 @@ CREATE TABLE payments (
     amount FLOAT NOT NULL,
     date DATETIME DEFAULT CURRENT_TIMESTAMP,
     customer_id INT NOT NULL,
+    type ENUM('credit_card', 'debit_card') NOT NULL DEFAULT 'credit_card',  
     FOREIGN KEY (customer_id) REFERENCES customers (id)
 );
 
@@ -47,6 +48,7 @@ CREATE TABLE credit_card_payments (
     card_number VARCHAR(16) NOT NULL,
     card_type VARCHAR(20) NOT NULL,
     expiry_date VARCHAR(10) NOT NULL,
+    type VARCHAR(20) NOT NULL DEFAULT 'credit_card',  
     FOREIGN KEY (id) REFERENCES payments (id)
 );
 
@@ -54,6 +56,7 @@ CREATE TABLE debit_card_payments (
     id INT PRIMARY KEY,
     bank_name VARCHAR(100) NOT NULL,
     card_number VARCHAR(16) NOT NULL,
+    type VARCHAR(20) NOT NULL DEFAULT 'debit_card',
     FOREIGN KEY (id) REFERENCES payments (id)
 );
 
