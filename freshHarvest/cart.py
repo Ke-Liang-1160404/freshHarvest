@@ -15,6 +15,7 @@ def cart():
         customer_id = session['user_id']
         order = Order.query.filter_by(customer_id=customer_id, status='Pending').first()
         print("order",order)
+        
         if order:
             order_lines = (
                 OrderLine.query
@@ -32,7 +33,7 @@ def cart():
         else:
             order_lines = []
 
-        return render_template('cart.html', order_lines=order_lines, order=order)
+        return render_template('cart.html', order_lines=order_lines, order=order,  session  = session)
       
 
 
@@ -162,8 +163,10 @@ def clear_cart():
 
     customer_id = session['user_id']
     order = Order.query.filter_by(customer_id=customer_id, status='Pending').first()
+    
     if order:
-        db.session.delete(order)
+        #change status to cancelled
+        order.status='Cancelled'
         db.session.commit()
         flash("Cart cleared successfully!")
     else:

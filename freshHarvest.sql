@@ -73,7 +73,7 @@ CREATE TABLE items (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     price FLOAT,  
-    type ENUM('WeightedVeggie', 'PackVeggie', 'UnitPriceVeggie', 'BunchVeggie','PreMadeBoxed') NOT NULL
+    type ENUM('weighted_veggies', 'pack_veggies', 'unit_price_veggies', 'bunch_veggies','premade_box') NOT NULL
 );
 
 CREATE TABLE veggies (
@@ -169,31 +169,36 @@ VALUES
 INSERT INTO items (name, type,price) 
 VALUES 
 -- Veggies by weight
-('Carrot','WeightedVeggie',1.79),  
-('Tomato','WeightedVeggie',6.99),  
-('Ginger','WeightedVeggie',9.99),  
-('Potato','WeightedVeggie',2.79),  
-('Onion','WeightedVeggie',2.79),
+('Carrot','weighted_veggies',1.79),  
+('Tomato','weighted_veggies',6.99),  
+('Ginger','weighted_veggies',9.99),  
+('Potato','weighted_veggies',2.79),  
+('Onion','weighted_veggies',2.79),
 
 -- Veggies by pack 
-('Lettuce', 'PackVeggie',2.49),  
-('Garlic','PackVeggie',2.99),  
-('Spinach','PackVeggie',4.99),  
-('Bai Choy','PackVeggie',0.99),  
+('Lettuce', 'pack_veggies',2.49),  
+('Garlic','pack_veggies',2.99),  
+('Spinach','pack_veggies',4.99),  
+('Bai Choy','pack_veggies',0.99),  
 
 -- Veggies by unit price 
-('pumpkin','UnitPriceVeggie', 4.49),  
-('Capsicum','UnitPriceVeggie', 1.70),  
-('Eggplant','UnitPriceVeggie', 1.99),  
-('Cucumber','UnitPriceVeggie', 2.49),  
-('Broccoli','UnitPriceVeggie',1.99),  
-('Cauliflower','UnitPriceVeggie', 3.49), 
-('Celery','UnitPriceVeggie',4.49),  
+('pumpkin','unit_price_veggies', 4.49),  
+('Capsicum','unit_price_veggies', 1.70),  
+('Eggplant','unit_price_veggies', 1.99),  
+('Cucumber','unit_price_veggies', 2.49),  
+('Broccoli','unit_price_veggies',1.99),  
+('Cauliflower','unit_price_veggies', 3.49), 
+('Celery','unit_price_veggies',4.49),  
 -- bunch veggies 
-('Asparagus', 'BunchVeggie',5),  
-('Leek','BunchVeggie', 2.99),  
-('Spring Onion','BunchVeggie', 1.99),  
-('Coriander','BunchVeggie', 1.49);
+('Asparagus', 'bunch_veggies',5),  
+('Leek','bunch_veggies', 2.99),  
+('Spring Onion','bunch_veggies', 1.99),  
+('Coriander','bunch_veggies', 1.49),
+
+-- premade boxes 
+('Small Box', 'premade_box', 0.50),  
+('Medium Box', 'premade_box', 1.00),  
+('Large Box', 'premade_box', 1.50);  
 
 
 INSERT INTO veggies (id) 
@@ -255,15 +260,15 @@ VALUES
 
 INSERT INTO premade_boxes (id, size, space, price) 
 VALUES 
-(1, 'Small', 5, 0.50),  
-(2, 'Medium', 10, 1.00),  
-(3, 'Large', 15, 1.50);
+(21, 'Small', 5, 0.50),  
+(22, 'Medium', 10, 1.00),  
+(23, 'Large', 15, 1.50);
 
 INSERT INTO box_contents (box_id, veggie_id, quantity) 
 VALUES 
-(1, 1, 3),  
-(1, 2, 2),  
-(2, 3, 5),  
-(2, 4, 3),  
-(3, 5, 10),  
-(3, 6, 4);
+(21, 1, 3),  
+(21, 2, 2),  
+(22, 3, 5),  
+(22, 4, 3),  
+(23, 5, 10),  
+(23, 6, 4);

@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block title %}Choose Box{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center mt-4">Choose Your Box</h1>
+    
+    <!-- Box Selection Section -->
+    <div class="mb-4">
+        <h3>Select a Box</h3>
+        <select id="boxSelect" class="form-select">
+            <option value="" disabled selected>Select a Box</option>
+            {% for box in boxes %}
+                <option value="{{ box.id }}" data-space="{{ box.space }}">
+                    {{ box.name }} - {{ box.size }} (Capacity: {{ box.space }} units)
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Veggie Selection Section -->
+    <h3>Select Veggies to Add</h3>
+    <div id="veggieSelection">
+        {% for veggie_type, veggie_list in veggies.items() %}
+            <h4>{{ veggie_type | capitalize }} Veggies</h4>
+            <div class="row">
+                {% for veggie in veggie_list %}
+                    <div class="col-md-3">
+                        <div class="card mb-4 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ veggie.name }}</h5>
+                                <p>Space Occupied: {{ veggie.space_occupied }} units</p>
+                                <input type="number" data-id="{{ veggie.id }}" data-space="{{ veggie.space_occupied }}" 
+                                       class="veggie-quantity form-control" min="0" max="100" placeholder="Qty">
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Summary and Add to Box Button -->
+    <div class="mt-4">
+        <h4>Total Space Used: <span id="totalSpaceUsed">0</span> units</h4>
+        <button id="addToBoxBtn" class="btn btn-primary" disabled>Add to Box</button>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let totalSpaceUsed = 0;
+        let boxSpaceCapacity = 0;
+
+        document.getElementById('boxSelect').addEventListener('change', function() {
+            boxSpaceCapacity = parseFloat(this.options[this.selectedIndex].dataset.space);
+            updateAddButton();
+        });
+
+        const quantities = document.querySelectorAll('.veggie-quantity');
+        quantities.forEach(qty => {
+            qty.addEventListener('input', function() {
+                const veggieSpace = parseFloat(this.dataset.space);
+                const quantity = parseFloat(this.value) || 0;
+                totalSpaceUsed = calculateTotalSpace(quantities);
+                document.getElementById('totalSpaceUsed').textContent = totalSpaceUsed;
+                updateAddButton();
+            });
+        });
+
+        function calculateTotalSpace(quantities) {
+            return Array.from(quantities).reduce((sum, qty) => {
+                const qtyValue = parseFloat(qty.value) || 0;
+                return sum + (qty.dataset.space * qtyValue);
+            }, 0);
+        }
+
+        function updateAddButton() {
+            const addButton = document.getElementById('addToBoxBtn');
+            addButton.disabled = totalSpaceUsed > boxSpaceCapacity || boxSpaceCapacity === 0;
+        }
+
+        document.getElementById('addToBoxBtn').addEventListener('click', async function() {
+            const boxId = document.getElementById('boxSelect').value;
+            const veggieSelections = Array.from(quantities)
+                .filter(qty => parseInt(qty.value) > 0)
+                .map(qty => ({ id: parseInt(qty.dataset.id), quantity: parseInt(qty.value), space_occupied: parseFloat(qty.dataset.space) }));
+
+            const response = await fetch("/choose_box", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ box_id: boxId, veggie_selections: veggieSelections })
+            });
+            const data = await response.json();
+
+            if (data.error) {
+                alert(data.error);
+            } else {
+                alert(data.success);
+                window.location.reload();
+            }
+        });
+    });
+</script>
+{% endblock %}
