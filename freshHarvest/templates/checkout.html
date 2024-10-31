@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Checkout</h2>
+    <form action="{{ url_for('checkout') }}" method="post">
+        <div class="form-group">
+            <label for="payment_method">Payment Method</label>
+            <select class="form-control" id="payment_method" name="payment_method" required>
+                <option value="" selected disabled>Select Payment Method</option>
+                <option value="credit_card">Credit Card</option>
+                <option value="debit_card">Debit Card</option>
+            </select>
+        </div>
+
+        <div id="credit-card-fields" style="display: none;">
+            <h5>Credit Card Information</h5>
+            <div class="form-group">
+                <label for="card_type">Card Type</label>
+                <select class="form-control" id="card_type" name="card_type">
+                    <option>Visa</option>
+                    <option>MasterCard</option>
+                    <option>American Express</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="card_number">Card Number</label>
+                <input type="text" class="form-control" id="card_number" name="card_number" placeholder="1234 5678 9123 4567" pattern="\d{4}\s?\d{4}\s?\d{4}\s?\d{4}" required>
+            </div>
+            <div class="form-group">
+                <label for="expiry_date">Expiry Date</label>
+                <input type="month" class="form-control" id="expiry_date" name="expiry_date" required>
+            </div>
+            <div class="form-group">
+                <label for="cvv">CVV</label>
+                <input type="password" class="form-control" id="cvv" name="cvv" pattern="\d{3}" placeholder="123" required>
+            </div>
+        </div>
+
+        <div id="debit-card-fields" style="display: none;">
+            <h5>Debit Card Information</h5>
+            <div class="form-group">
+                <label for="bank_name">Bank Name</label>
+                <select class="form-control" id="bank_name" name="bank_name" required>
+                    <option>BNZ</option>
+                    <option>ANZ</option>
+                    <option>ASB</option>
+                    <option>Kiwi Bank</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="card_number_debit">Card Number</label>
+                <input type="text" class="form-control" id="card_number_debit" name="card_number_debit" placeholder="1234 5678 9123 4567" pattern="\d{4}\s?\d{4}\s?\d{4}\s?\d{4}"
+                required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-success mt-3">Pay Now</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('payment_method').addEventListener('change', function() {
+        var method = this.value;
+        document.getElementById('credit-card-fields').style.display = (method === 'credit_card') ? 'block' : 'none';
+        document.getElementById('debit-card-fields').style.display = (method === 'debit_card') ? 'block' : 'none';
+
+
+         // Set required attributes only on the visible fields
+        document.getElementById('card_number').required = (method === 'credit_card');
+        document.getElementById('expiry_date').required = (method === 'credit_card');
+        document.getElementById('cvv').required = (method === 'credit_card');
+        document.getElementById('card_number_debit').required = (method === 'debit_card');
+        document.getElementById('bank_name').required = (method === 'debit_card');
+    });
+
+    
+</script>
+{% endblock content %}

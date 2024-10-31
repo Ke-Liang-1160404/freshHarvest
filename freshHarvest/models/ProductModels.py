@@ -6,7 +6,7 @@ class Item(db.Model):
     __tablename__ = 'items'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    type = db.Column(db.String(50),nullable=False )
+    type = db.Column(db.String(50),nullable=False ) #discriminator
     price = db.Column(db.Float,nullable=False)
 
     __mapper_args__ = {

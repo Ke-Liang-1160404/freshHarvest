@@ -29,6 +29,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://{user}:{password}@{host}/{db_na
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db= SQLAlchemy(app)
 
-from freshHarvest import home, login, staff_dashboard, customer_dashboard, products,cart
+from freshHarvest import home, login, staff_dashboard, customer_dashboard, products,cart, checkoutPament
 from freshHarvest.models import PeopleModels, ProductModels, OrderPaymentModels
 
