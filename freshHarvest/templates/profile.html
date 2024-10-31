@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+
+  <div class="container">
+        <h1>Profile</h1>
+
+        <!-- Basic Information -->
+        <div class="profile-section">
+            <h2>Basic Information</h2>
+            <p><strong>First Name:</strong> {{ customer.first_name }}</p>
+            <p><strong>Last Name:</strong> {{ customer.last_name }}</p>
+            <p><strong>Username:</strong> {{ customer.username }}</p>
+        </div>
+
+        <!-- Address and Balance -->
+        <div class="profile-section">
+            <h2>Account Information</h2>
+            <p><strong>Address:</strong> {{ customer.address }}</p>
+            <p><strong>Balance:</strong> ${{ customer.balance }}</p>
+        </div>
+
+        <!-- Max Owing (only for regular customers) -->
+        {% if customer.max_owing is not none %}
+        <div class="profile-section">
+            <h2>Customer Details</h2>
+            <p><strong>Max Owing:</strong> ${{ customer.max_owing }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Corporate-Specific Information -->
+        {% if customer.discount_rate %}
+        <div class="profile-section">
+            <h2>Corporate Customer Details</h2>
+            <p><strong>Company Address:</strong> {{ customer.address }}</p>
+            <p><strong>Discount Rate:</strong> {{ customer.discount_rate * 100 }}%</p>
+            <p><strong>Credit Limit:</strong> ${{ customer.credit_limit }}</p>
+            <p><strong>Minimum Balance:</strong> ${{ customer.min_balance }}</p>
+        </div>
+        {% endif %}
+
+    </div>
+  {% endblock content %}

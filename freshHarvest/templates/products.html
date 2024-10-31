@@ -7,7 +7,24 @@
     
     <!-- Weighted Veggies Section -->
     <h3 class="mt-5">Veggies by Weight</h3>
+
+    <div class="d-flex mb-3">
+      <select id="boxSelect" class="form-select">
+        <option value="" disabled selected>Select a Box</option>
+        <option value="">do not use a box</option>
+        {% for box in boxes %}
+          
+            <option value="{{ box.id }}" data-space="{{ box.space }}">
+                {{ box.name }} - {{ box.size }} (Capacity: {{ box.space }} units)
+            </option>
+        {% endfor %}
+    </select>
+      
+    </div>
     <div class="row">
+       
+       
+
         {% for veggie in products.weighted_veggies %}
             <div class="col-md-3">
               <div class="card mb-4 shadow-sm">

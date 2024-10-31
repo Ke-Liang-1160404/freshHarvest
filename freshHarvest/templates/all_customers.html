@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}All Customers{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h1>All  Customers</h1>
+  
+  <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+<table>
+  <table class="table table-striped table-bordered table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Customer No./Customer Name</th>
+            <th scope="col">Customer Type</th>
+            <th scope="col">Discount Rate</th>
+            <th scope="col">Blance</th>
+            <th scope="col">Max Owning</th>
+            <th scope="col">Credit Limit</th>
+            <th scope="col">MinimalBalance</th>
+            <th scope="col">Actions</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for customer in results %}
+        <tr>
+            <td> {{ customer.customer_id }}/{{ customer.first_name }} {{ customer.last_name }}</td>
+            <td> {% if customer.is_corporate %}Corporate Customer {% else %}Normal {% endif %}</td>
+            <td> {% if customer.discount_rate %}{{(customer.discount_rate * 100)|round(2) }}% {% else %} None {% endif %}</td>
+            <td> {{ customer.balance }}</td>
+            <td> {{ customer.max_owing }}</td>
+            <td> {{ customer.credit_limit }}</td>
+            <td> {{ customer.min_balance }}</td>
+   
+            <td>
+                <form action="{{url_for('see_customer', id=customer.customer_id)}}">
+
+                  <input type="text" value{{customer.customer_id}} hidden>
+                  <button type="submit" class="btn btn-info btn-sm">See Orders</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<tbody></tbody>
+
+</table>
+</div>
+</div>
+
+{% endblock content %}
+  

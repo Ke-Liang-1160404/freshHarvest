@@ -28,6 +28,18 @@ class Veggie(Item):
         
     def __repr__(self) -> str:
         return f"{self.name}" 
+      
+    @staticmethod
+    def find_veggie_by_name(name):
+        # Search across all veggie types
+        weighted = WeightedVeggie.query.filter_by(name=name).all()
+        pack = PackVeggie.query.filter_by(name=name).all()
+        unit_price = UnitPriceVeggie.query.filter_by(name=name).all()
+        bunch = BunchVeggie.query.filter_by(name=name).all()
+
+        # Combine all results into a single list
+        results = weighted + pack + unit_price + bunch
+        return results if results else None
 
 class WeightedVeggie(Veggie):
     __tablename__ = 'weighted_veggies'
@@ -36,7 +48,7 @@ class WeightedVeggie(Veggie):
     space_occupied = db.Column(db.Float)
 
     __mapper_args__ = {
-        'polymorphic_identity': 'WeightedVeggie'
+        'polymorphic_identity': 'weighted_veggies'  
     }
     
     def __init__(self, name, weight, space_occupied, price):
@@ -70,7 +82,7 @@ class PackVeggie(Veggie):
     space_occupied = db.Column(db.Float)
 
     __mapper_args__ = {
-        'polymorphic_identity': 'PackVeggie'
+        'polymorphic_identity': 'pack_veggies'
     }
     
     def __init__(self, name, num_of_pack, price, space_occupied):
@@ -100,7 +112,7 @@ class UnitPriceVeggie(Veggie):
     space_occupied = db.Column(db.Float)
     
     __mapper_args__ = {
-        'polymorphic_identity': 'UnitPriceVeggie'
+        'polymorphic_identity': 'unit_price_veggies'
     }
     def __init__(self, name, price, space_occupied):
       super().__init__(name=name, price=price)
@@ -127,14 +139,14 @@ class BunchVeggie(Veggie):
     id = db.Column(db.Integer, db.ForeignKey('veggies.id'), primary_key=True)
     num_of_bunch = db.Column(db.Integer)
     space_occupied = db.Column(db.Float)
+    
     __mapper_args__ = {
-        'polymorphic_identity': 'BunchVeggie'
+        'polymorphic_identity': 'bunch_veggies'
     }
     
     def __init__(self, name, num_of_bunch, price, space_occupied):
       super().__init__(name=name, price=price)
       self.num_of_bunch = num_of_bunch
-
       self.space_occupied = space_occupied
       
         
@@ -157,20 +169,18 @@ class PremadeBox(Item):
     __tablename__ = 'premade_boxes'
     id = db.Column(db.Integer, db.ForeignKey('items.id'), primary_key=True)
     size = db.Column(db.String(10))  # Small, Medium, Large
-    num_of_boxes = db.Column(db.Integer)
     space= db.Column(db.Float)
 
     contents = db.relationship('BoxContent', backref='box')
     __mapper_args__ = {
-        'polymorphic_identity': 'PremadeBox'
+        'polymorphic_identity': 'premade_box'
     }
     
     def __init__(self, name, size, num_of_boxes, price, space):
       super().__init__(name=name, price=price)  
       self.size = size
-      self.num_of_boxes = num_of_boxes
-
       self.space = space
+      
 
 
 class BoxContent(db.Model):

@@ -53,11 +53,40 @@
                 >Products</a
               >
             </li>
+            {% if session['role'] == 'staff' %}
+            <li class="nav-item">
+              <a href="{{url_for('all_customers')}}" class="nav-link"
+                >All Customers</a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="{{url_for('all_orders')}}" class="nav-link"
+                >All Orders</a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="{{url_for('orders')}}" class="nav-link"
+                >Report</a
+              >
+            </li>
+            {% elif session['role']=='customer' or session['role']=='corporate_customer' %}
+           
             <li class="nav-item">
               <a href="{{url_for('orders')}}" class="nav-link"
                 >Orders History</a
               >
             </li>
+            <li class="nav-item">
+              <a href="{{url_for('cart')}}" class="nav-link"
+                >Cart</a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="{{url_for('profile')}}" class="nav-link"
+                >profile</a
+              >
+            </li>
+            {% endif %}
            
             
             {% if not session %}
@@ -65,16 +94,7 @@
               <a href="{{url_for('login')}}" class="btn btn-success">Sign Up/Login</a>
             </li>
             {% else %}
-            <li class="nav-item">
-              <a href="{{url_for('cart')}}" class="nav-link"
-                >Cart</a
-              >
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link"
-                >profile</a
-              >
-            </li>
+           
             <li class="nav-item">
               <a href="{{url_for('logout')}}" class="btn btn-danger">Logout</a> 
             </li>
@@ -159,7 +179,7 @@
 
     
       
-    {% block content %}{{customers}}{% endblock %}
+    {% block content %}{% endblock %}
     </section>
 
     <!-- Footer -->

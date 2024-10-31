@@ -49,20 +49,37 @@ def order_detail(order_id):
   
 
 
-
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
+    customer_id = session.get('user_id')
+
+    if not customer_id:
+        flash("Please log in to proceed with checkout.")
+        return redirect(url_for('login'))
+
+    # Retrieve the pending order for the customer
+    order = Order.query.filter_by(customer_id=customer_id, status='Pending').first()
+    if not order:
+        flash("No pending order found.")
+        return redirect(url_for('products'))
+
+    # Check if the customer is a corporate customer and apply discount
+    is_corporate_customer = session.get('role') == 'corporate_customer'
+    discount_rate = 0.1  # Default 10% discount for corporate customers
+    original_total = order.order_total()
+
+    # Apply discount if corporate customer
+    discounted_total = original_total * (1 - discount_rate) if is_corporate_customer else original_total
+    discounted_total = round(discounted_total, 2)  
+    print("discounted_total",discounted_total) 
+    # Update the total in the order if a corporate discount is applied
+    if is_corporate_customer:
+        order.total = discounted_total
+        db.session.commit()
+
     if request.method == 'POST':
         # Retrieve the necessary information from the form
         payment_method = request.form.get('payment_method')
-        customer_id = session['user_id']
-        print("customer_id",customer_id)
-        # Retrieve the pending order for the customer
-        order = Order.query.filter_by(customer_id=customer_id, status='Pending').first()
-
-        if not order:
-            flash("No pending order found.")
-            return redirect(url_for('products'))
 
         # Process payment based on method
         payment = None
@@ -75,33 +92,29 @@ def checkout():
             payment = CreditCardPayment.query.filter_by(customer_id=customer_id, id=order.id).first()
             if not payment:
                 payment = CreditCardPayment(
-                    amount=order.order_total(),
+                    amount=discounted_total,
                     customer_id=customer_id,
                     card_number=card_number,
                     card_type=card_type,
                     expiry_date=expiry_date,
                 )
-                print("payment",payment)  
                 db.session.add(payment)
             else:
                 # Update existing payment if needed
-                payment.amount = order.order_total()
+                payment.amount = discounted_total
                 payment.card_number = card_number
                 payment.card_type = card_type
                 payment.expiry_date = expiry_date
-
-                
 
         elif payment_method == 'debit_card':
             bank_name = request.form.get('bank_name')
             card_number = request.form.get('card_number_debit')
 
-            
             # Check if payment record exists
             payment = DebitCardPayment.query.filter_by(customer_id=customer_id, id=order.id).first()
             if not payment:
                 payment = DebitCardPayment(
-                    amount=order.order_total(),
+                    amount=discounted_total,
                     customer_id=customer_id,
                     bank_name=bank_name,
                     card_number=card_number,
@@ -109,10 +122,9 @@ def checkout():
                 db.session.add(payment)
             else:
                 # Update existing payment if needed
-                payment.amount = order.order_total()
+                payment.amount = discounted_total
                 payment.bank_name = bank_name
                 payment.card_number = card_number
-                payment.type = 'debit_card' 
 
         # Finalize the order and payment
         if payment:
@@ -127,4 +139,4 @@ def checkout():
             flash("Payment processing failed. Please try again.")
             return redirect(url_for('checkout'))
             
-    return render_template('checkout.html')
+    return render_template('checkout.html', order=order, original_total=original_total, discounted_total=discounted_total, is_corporate_customer=is_corporate_customer)

@@ -63,8 +63,21 @@
     </table>
     </div>
     <div class="d-flex justify-content-end">
-          <h4>Sub Total: ${{ order.order_total() }}</h4>    
+          <h3>Sub Total: ${{ order.order_total() }}</h3>  
+
+          
     </div>
+    {% if session['role']=='corporate_customer' %}  
+    <div class="d-flex justify-content-end">
+
+      <p>You will have a 10% discount</p>
+    </div>
+    <div class="d-flex justify-content-end">
+
+      <h2>Total After: ${{ (order.order_total() * 0.9) | round(2) }}</h2>
+    </div>
+
+    {% endif %}  
     <div class="text-end mt-3">
           <a href="#" onclick="confirmClearCart()"  class="btn btn-danger">Cancel Order</a>
           <a href="{{ url_for('checkout') }}" class="btn btn-success">Proceed to Checkout</a>

@@ -63,20 +63,3 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
   
-@app.route('/all_customers')
-def all_customers():
-  
-    customers= PeopleModels.Customer.query.all()
-    staff=PeopleModels.Staff.query.all()
-    corporate=PeopleModels.CorporateCustomer.query.all()
-    order=OrderPaymentModels.Order.query.all()
-    payment=OrderPaymentModels.Payment.query.all()
-    creditsCards= OrderPaymentModels.CreditCardPayment.query.all()
-    debitCards=OrderPaymentModels.DebitCardPayment.query.all()
-    item=ProductModels.Item.query.all()
-    veggie=ProductModels.Veggie.query.all()
-    box=ProductModels.PremadeBox.query.all()
-    contents=ProductModels.PremadeBox.query.all()
-    print(customers)
-    print(staff,"/n",corporate,"/n",order,"/n",payment,"/n",creditsCards,"/n",debitCards,"/n",item,"/n",veggie,"/n",box,"/n",contents)
-    return render_template('base.html', customers= customers) 

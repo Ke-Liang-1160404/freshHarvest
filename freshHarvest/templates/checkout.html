@@ -4,6 +4,15 @@
 {% block content %}
 <div class="container mt-5">
     <h2>Checkout</h2>
+
+
+    <div class="order-summary">
+      <p><strong>Order Total:</strong> ${{ original_total }}</p>
+      {% if is_corporate_customer %}
+        <p><strong>Corporate Discount Applied:</strong> 10%</p>
+        <p><strong>Total after Discount:</strong> ${{ discounted_total }}</p>
+      {% endif %}
+    </div>
     <form action="{{ url_for('checkout') }}" method="post">
         <div class="form-group">
             <label for="payment_method">Payment Method</label>
