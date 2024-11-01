@@ -1,0 +1,5 @@
+.veggie-img {
+  height: 200px; /* Set a fixed height for the images */
+  object-fit: cover; /* Ensures the image covers the container */
+  width: 100%; /* Make the image responsive */
+}

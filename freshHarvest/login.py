@@ -43,9 +43,9 @@ def login():
                 if session['role'] == 'staff':
                     return redirect(url_for('staff_dashboard',session=session))
                 elif session['role'] == 'corporate_customer':
-                    return redirect(url_for('customer_dashboard',session=session))
+                    return redirect(url_for('index',session=session))
                 elif session['role'] == 'customer':
-                    return redirect(url_for('customer_dashboard',session=session))
+                    return redirect(url_for('index',session=session))
 
 
 

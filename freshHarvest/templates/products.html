@@ -2,8 +2,21 @@
 {% block title %}Products{% endblock %}
 
 {% block content %}
+<style>
+  .veggie-img {
+    height: 200px; /* Set a fixed height for the images */
+    object-fit: cover; /* Ensures the image covers the container */
+    width: 100%; /* Make the image responsive */
+  }
+</style>
+
 <div class="container">
     <h1 class="text-center mt-4">Our Veggies</h1>
+
+    <!-- Search Input -->
+    <div class="mb-4">
+        <input type="text" id="searchInput" placeholder="Search for veggies..." class="form-control" onkeyup="filterVeggies()">
+    </div>
     
     <!-- Weighted Veggies Section -->
     <h3 class="mt-5">Veggies by Weight</h3>
@@ -13,22 +26,19 @@
         <option value="" disabled selected>Select a Box</option>
         <option value="">do not use a box</option>
         {% for box in boxes %}
-          
             <option value="{{ box.id }}" data-space="{{ box.space }}">
                 {{ box.name }} - {{ box.size }} (Capacity: {{ box.space }} units)
             </option>
         {% endfor %}
-    </select>
-      
+      </select>
     </div>
-    <div class="row">
-       
-       
-
+    
+    <div class="row" id="veggieList">
         {% for veggie in products.weighted_veggies %}
-            <div class="col-md-3">
-              <div class="card mb-4 shadow-sm">
-                  <div class="card-body">
+            <div class="col-md-3 veggie-item">
+              <div class="card mb-4 shadow-sm d-flex flex-column">
+                  <img src="../static/images/{{ veggie.name | lower }}.png" alt="{{ veggie.name }}" class="card-img-top img-fluid veggie-img">
+                  <div class="card-body flex-grow-1">
                       <h5 class="card-title">{{ veggie.name }}</h5>
                       <p>Price: ${{ veggie.price }}/kg</p>
                       <form action="{{ url_for('add_to_cart') }}" method="post" class="d-flex align-items-center">
@@ -45,65 +55,94 @@
 
     <!-- Pack Veggies Section -->
     <h3 class="mt-5">Veggies by Pack</h3>
-    <div class="row">
+    <div class="row" id="packVeggieList">
         {% for veggie in products.pack_veggies %}
-        <div class="col-md-3">
-          <div class="card mb-4 shadow-sm">
-              <div class="card-body">
-                  <h5 class="card-title">{{ veggie.name }}</h5>
-                  <p>Price: ${{ veggie.price }}/Pack</p>
-                  <form action="{{ url_for('add_to_cart') }}" method="post" class="d-flex align-items-center">
-                      <input type="hidden" name="veggie_id" value="{{ veggie.id }}">
-                      <label for="quantity" class="me-2 mb-0" style="font-size: 0.9em;">Select Amount:</label>
-                      <input type="number" name="quantity" class="form-control form-control-sm me-2" min="1" max="100" required style="width: 50px;">
-                      <button type="submit" class="btn btn-success btn-sm">Add to Cart</button>
-                  </form>
+            <div class="col-md-3 veggie-item">
+              <div class="card mb-4 shadow-sm d-flex flex-column">
+                  <img src="../static/images/{{ veggie.name | lower }}.png" alt="{{ veggie.name }}" class="card-img-top img-fluid veggie-img">
+                  <div class="card-body flex-grow-1">
+                      <h5 class="card-title">{{ veggie.name }}</h5>
+                      <p>Price: ${{ veggie.price }}/Pack</p>
+                      <form action="{{ url_for('add_to_cart') }}" method="post" class="d-flex align-items-center">
+                          <input type="hidden" name="veggie_id" value="{{ veggie.id }}">
+                          <label for="quantity" class="me-2 mb-0" style="font-size: 0.9em;">Select Amount:</label>
+                          <input type="number" name="quantity" class="form-control form-control-sm me-2" min="1" max="100" required style="width: 50px;">
+                          <button type="submit" class="btn btn-success btn-sm">Add to Cart</button>
+                      </form>
+                  </div>
               </div>
           </div>
-      </div>
         {% endfor %}
     </div>
 
     <!-- Unit Price Veggies Section -->
     <h3 class="mt-5">Veggies by Unit Price</h3>
-    <div class="row">
+    <div class="row" id="unitPriceVeggieList">
         {% for veggie in products.unit_price_veggies %}
-        <div class="col-md-3">
-          <div class="card mb-4 shadow-sm">
-              <div class="card-body">
-                  <h5 class="card-title">{{ veggie.name }}</h5>
-                  <p>Price: ${{ veggie.price }}/Each</p>
-                  <form action="{{ url_for('add_to_cart') }}" method="post" class="d-flex align-items-center">
-                      <input type="hidden" name="veggie_id" value="{{ veggie.id }}">
-                      <label for="quantity" class="me-2 mb-0" style="font-size: 0.9em;">Select Amount:</label>
-                      <input type="number" name="quantity" class="form-control form-control-sm me-2" min="1" max="100" required style="width: 50px;">
-                      <button type="submit" class="btn btn-success btn-sm">Add to Cart</button>
-                  </form>
+            <div class="col-md-3 veggie-item">
+              <div class="card mb-4 shadow-sm d-flex flex-column">
+                  <img src="../static/images/{{ veggie.name | lower }}.png" alt="{{ veggie.name }}" class="card-img-top img-fluid veggie-img">
+                  <div class="card-body flex-grow-1">
+                      <h5 class="card-title">{{ veggie.name }}</h5>
+                      <p>Price: ${{ veggie.price }}/Each</p>
+                      <form action="{{ url_for('add_to_cart') }}" method="post" class="d-flex align-items-center">
+                          <input type="hidden" name="veggie_id" value="{{ veggie.id }}">
+                          <label for="quantity" class="me-2 mb-0" style="font-size: 0.9em;">Select Amount:</label>
+                          <input type="number" name="quantity" class="form-control form-control-sm me-2" min="1" max="100" required style="width: 50px;">
+                          <button type="submit" class="btn btn-success btn-sm">Add to Cart</button>
+                      </form>
+                  </div>
               </div>
           </div>
-      </div>
         {% endfor %}
     </div>
 
     <!-- Bunch Veggies Section -->
     <h3 class="mt-5">Veggies by Bunch</h3>
-    <div class="row">
+    <div class="row" id="bunchVeggieList">
         {% for veggie in products.bunch_veggies %}
-        <div class="col-md-3">
-          <div class="card mb-4 shadow-sm">
-              <div class="card-body">
-                  <h5 class="card-title">{{ veggie.name }}</h5>
-                  <p>Price: ${{ veggie.price }}/Bunch</p>
-                  <form action="{{ url_for('add_to_cart') }}" method="post" class="d-flex align-items-center">
-                      <input type="hidden" name="veggie_id" value="{{ veggie.id }}">
-                      <label for="quantity" class="me-2 mb-0" style="font-size: 0.9em;">Select Amount:</label>
-                      <input type="number" name="quantity" class="form-control form-control-sm me-2" min="1" max="100" required style="width: 50px;">
-                      <button type="submit" class="btn btn-success btn-sm">Add to Cart</button>
-                  </form>
+            <div class="col-md-3 veggie-item">
+              <div class="card mb-4 shadow-sm d-flex flex-column">
+                  <img src="../static/images/{{ veggie.name | lower }}.png" alt="{{ veggie.name }}" class="card-img-top img-fluid veggie-img">
+                  <div class="card-body flex-grow-1">
+                      <h5 class="card-title">{{ veggie.name }}</h5>
+                      <p>Price: ${{ veggie.price }}/Bunch</p>
+                      <form action="{{ url_for('add_to_cart') }}" method="post" class="d-flex align-items-center">
+                          <input type="hidden" name="veggie_id" value="{{ veggie.id }}">
+                          <label for="quantity" class="me-2 mb-0" style="font-size: 0.9em;">Select Amount:</label>
+                          <input type="number" name="quantity" class="form-control form-control-sm me-2" min="1" max="100" required style="width: 50px;">
+                          <button type="submit" class="btn btn-success btn-sm">Add to Cart</button>
+                      </form>
+                  </div>
               </div>
           </div>
-      </div>
         {% endfor %}
     </div>
 </div>
+
+<script>
+function filterVeggies() {
+    const input = document.getElementById('searchInput');
+    const filter = input.value.toLowerCase();
+    const veggieLists = [ 
+        document.getElementById('veggieList'), 
+        document.getElementById('packVeggieList'), 
+        document.getElementById('unitPriceVeggieList'), 
+        document.getElementById('bunchVeggieList') 
+    ];
+    
+    veggieLists.forEach(veggieList => {
+        const veggieItems = veggieList.getElementsByClassName('veggie-item');
+
+        for (let i = 0; i < veggieItems.length; i++) {
+            const veggieName = veggieItems[i].getElementsByClassName('card-title')[0].innerText.toLowerCase();
+            if (veggieName.includes(filter)) {
+                veggieItems[i].style.display = ''; // Show the veggie item
+            } else {
+                veggieItems[i].style.display = 'none'; // Hide the veggie item
+            }
+        }
+    });
+}
+</script>
 {% endblock content %}

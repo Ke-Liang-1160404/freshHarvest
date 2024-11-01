@@ -29,8 +29,8 @@
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a href="{{url_for('index')}}" class="navbar-brand">
           <img
-            src="#"
-            alt="secondary_logo"
+            src="../static/images/logo-prime.jpeg"
+            alt="primary_logo"
             class="img-fluid"
             style="max-width: 100px"
           />
@@ -103,55 +103,9 @@
           </ul>
         </div>
       </nav>
-      <div class="flex-wrap position-fixed bottom-0 end-0 p-3 z-3">
-        
-
      
-        <button class="btn btn-dark ms-lg-3" data-bs-toggle="modal" data-bs-target="#contactModal">
-          Contact Us
-        </button>
-      </div>
-      <!-----   Contact Modal   ------>
-      <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="contactModalLabel">Contact Us</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <form id="contactForm" method="POST" action="#">
-                <div class="mb-3">
-                  <label for="name" class="form-label">Name</label>
-                  <input type="text" class="form-control" id="name" name="name" required />
-                <div class="mb-3">
-                  <label for="email" class="form-label">Email</label>
-                  <input type="email" class="form-control" id="email" name="email" required />
-                </div>
-                <div class="mb-3">
-                  <label for="phone" class="form-label">Phone</label>
-                  <input type="text" class="form-control" id="phone" name="phone" required />
-                </div>
-                <div class="mb-3">
-                  <label for="enquiry" class="form-label">Enquiry</label>
-                  <textarea class="form-control" id="enquiry" name="enquiry" rows="3" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary w-100">Send Enquiry</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="text-center my-4">
-        <a href="{{url_for('index')}}">
-          <img
-            src="#"
-            alt="primary_logo"
-            class="img-fluid"
-            style="max-width: 200px"
-          />
-        </a>
-      </div>
+    
+   
     </header>
 
     <div id="loading" style="display: none">
@@ -179,7 +133,19 @@
 
     
       
-    {% block content %}{% endblock %}
+    {% block content %}
+    <div class="responsive-image position-relative" style="min-height: 100vh;">
+      <img src="../static/images/home-page.jpg" alt="Fresh Veggies background image" class="img-fluid w-100 h-100 position-absolute top-0 start-0 opacity-75" style="object-fit: cover; z-index: -1;">
+      <div class="d-flex justify-content-center align-items-center h-100 mb ">
+          <div class="text-center text-white bg-dark p-3 rounded opacity-80 mt-5 " >
+              <h5>Wanna Freshest Veggies?</h5>
+              <p>Order with us!</p>
+              <a href="{{ url_for('products') }}" class="btn btn-primary">Start Now</a>
+          </div>
+      </div>
+  </div>
+    
+    {% endblock %}
     </section>
 
     <!-- Footer -->
@@ -196,7 +162,7 @@
             class="bi me-2"
             width="70"
             height="70"
-            src="#"
+            src="../static/images/logo-second.png"
             alt="Harvest_logo"
           />
         </a>
